@@ -206,7 +206,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public Page<PostModel> findPostWithPagination(Pageable pageable, PostQueryModel queryModel) {
-        Page<PostEntity> post = postRepository.findAllPost(queryModel.getTitle(), queryModel.getPostType(), pageable);
+        Page<PostEntity> post = postRepository.findAllPost(queryModel.getTitle(), queryModel.getFishType(), pageable);
         return post.map(PostMapper::mapTo);
     }
 

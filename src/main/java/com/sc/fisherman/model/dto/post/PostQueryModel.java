@@ -1,6 +1,6 @@
 package com.sc.fisherman.model.dto.post;
 
-import com.sc.fisherman.model.enums.EnumPostType;
+import com.sc.fisherman.model.enums.EnumFishType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PostQueryModel {
     private String title;
-    private EnumPostType postType;
+    private EnumFishType fishType;
 }

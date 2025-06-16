@@ -1,7 +1,7 @@
 package com.sc.fisherman.model.dto.post;
 
-import com.sc.fisherman.model.enums.EnumPostType;
 import com.sc.fisherman.model.dto.base.BaseModel;
+import com.sc.fisherman.model.enums.EnumFishType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,10 +24,11 @@ public class PostModel extends BaseModel {
     @NotNull
     @Positive
     private Long userId;
+    private Long locationId;
     private Long viewNumber = 0L;
     private Long likeNumber = 0L;
     @NotBlank
-    private EnumPostType postType;
+    private EnumFishType fishType;
     private String imageUrl;
     private String userImageUrl;
     private String name;

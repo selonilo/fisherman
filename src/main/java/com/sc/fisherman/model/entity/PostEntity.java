@@ -1,6 +1,6 @@
 package com.sc.fisherman.model.entity;
 
-import com.sc.fisherman.model.enums.EnumPostType;
+import com.sc.fisherman.model.enums.EnumFishType;
 import com.sc.fisherman.model.entity.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,8 +24,11 @@ public class PostEntity extends BaseEntity {
     @Column(name = "USER_ID")
     private Long userId;
 
-    @Column(name = "POST_TYPE")
-    private EnumPostType postType;
+    @Column(name = "FISH_TYPE")
+    private EnumFishType fishType;
+
+    @Column(name = "LOCATION_ID")
+    private Long locationId;
 
     @Column(name = "IMAGE_URL")
     private String imageUrl;

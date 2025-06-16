@@ -1,14 +1,14 @@
 package com.sc.fisherman.model.converter;
 
-import com.sc.fisherman.model.enums.EnumPostType;
+import com.sc.fisherman.model.enums.EnumFishType;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
 @Converter(autoApply = true)
-public class EnumPostConverter implements AttributeConverter<EnumPostType, Long> {
+public class EnumFishConverter implements AttributeConverter<EnumFishType, Long> {
 
     @Override
-    public Long convertToDatabaseColumn(EnumPostType postType) {
+    public Long convertToDatabaseColumn(EnumFishType postType) {
         if (postType == null) {
             return null;
         }
@@ -16,10 +16,10 @@ public class EnumPostConverter implements AttributeConverter<EnumPostType, Long>
     }
 
     @Override
-    public EnumPostType convertToEntityAttribute(Long value) {
+    public EnumFishType convertToEntityAttribute(Long value) {
         if (value == null) {
             return null;
         }
-        return EnumPostType.fromValue(value);
+        return EnumFishType.fromValue(value);
     }
 }

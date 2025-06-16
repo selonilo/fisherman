@@ -7,34 +7,36 @@ import java.util.List;
 
 public class PostMapper {
 
-    public static PostModel mapTo(PostEntity postEntity) {
-        PostModel postModel = new PostModel();
-        postModel.setId(postEntity.getId());
-        postModel.setUpdatedDate(postEntity.getUpdatedDate());
-        postModel.setCreatedDate(postEntity.getCreatedDate());
-        postModel.setUpdatedBy(postEntity.getUpdatedBy());
-        postModel.setCreatedBy(postEntity.getCreatedBy());
-        postModel.setTitle(postEntity.getTitle());
-        postModel.setContent(postEntity.getContent());
-        postModel.setUserId(postEntity.getUserId());
-        postModel.setPostType(postEntity.getPostType());
-        postModel.setImageUrl(postEntity.getImageUrl());
-        return postModel;
+    public static PostModel mapTo(PostEntity entity) {
+        PostModel model = new PostModel();
+        model.setId(entity.getId());
+        model.setUpdatedDate(entity.getUpdatedDate());
+        model.setCreatedDate(entity.getCreatedDate());
+        model.setUpdatedBy(entity.getUpdatedBy());
+        model.setCreatedBy(entity.getCreatedBy());
+        model.setTitle(entity.getTitle());
+        model.setContent(entity.getContent());
+        model.setUserId(entity.getUserId());
+        model.setFishType(entity.getFishType());
+        model.setImageUrl(entity.getImageUrl());
+        model.setLocationId(entity.getLocationId());
+        return model;
     }
 
-    public static PostEntity mapTo(PostModel postModel) {
-        PostEntity postEntity = new PostEntity();
-        postEntity.setId(postModel.getId());
-        postEntity.setUpdatedDate(postModel.getUpdatedDate());
-        postEntity.setCreatedDate(postModel.getCreatedDate());
-        postEntity.setUpdatedBy(postModel.getUpdatedBy());
-        postEntity.setCreatedBy(postModel.getCreatedBy());
-        postEntity.setTitle(postModel.getTitle());
-        postEntity.setContent(postModel.getContent());
-        postEntity.setUserId(postModel.getUserId());
-        postEntity.setPostType(postModel.getPostType());
-        postEntity.setImageUrl(postModel.getImageUrl());
-        return postEntity;
+    public static PostEntity mapTo(PostModel model) {
+        PostEntity entity = new PostEntity();
+        entity.setId(model.getId());
+        entity.setUpdatedDate(model.getUpdatedDate());
+        entity.setCreatedDate(model.getCreatedDate());
+        entity.setUpdatedBy(model.getUpdatedBy());
+        entity.setCreatedBy(model.getCreatedBy());
+        entity.setTitle(model.getTitle());
+        entity.setContent(model.getContent());
+        entity.setUserId(model.getUserId());
+        entity.setFishType(model.getFishType());
+        entity.setImageUrl(model.getImageUrl());
+        entity.setLocationId(model.getLocationId());
+        return entity;
     }
 
     public static List<PostModel> mapToList(List<PostEntity> entities) {
