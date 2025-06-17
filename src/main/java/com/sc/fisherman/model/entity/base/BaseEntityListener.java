@@ -5,19 +5,20 @@ import jakarta.persistence.PreUpdate;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class BaseEntityListener {
     @PrePersist
     public void prePersist(BaseEntity entity) {
-        entity.setCreatedDate(LocalDate.now());
-        entity.setUpdatedDate(LocalDate.now());
+        entity.setCreatedDate(LocalDateTime.now());
+        entity.setUpdatedDate(LocalDateTime.now());
         entity.setCreatedBy(getCurrentUser());
         entity.setUpdatedBy(getCurrentUser());
     }
 
     @PreUpdate
     public void preUpdate(BaseEntity entity) {
-        entity.setUpdatedDate(LocalDate.now());
+        entity.setUpdatedDate(LocalDateTime.now());
         entity.setUpdatedBy(getCurrentUser());
     }
 

@@ -25,4 +25,7 @@ public class CommentEntity extends BaseEntity {
 
     @Column(name = "COMMENT")
     private String comment;
+
+    @Column(name = "PARENT_COMMENT_ID")
+    private Long parentCommentId;
 }

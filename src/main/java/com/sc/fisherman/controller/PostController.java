@@ -1,10 +1,13 @@
 package com.sc.fisherman.controller;
 
 import com.sc.fisherman.model.dto.TotalStatsModel;
-import com.sc.fisherman.model.dto.post.CommentModel;
+import com.sc.fisherman.model.dto.comment.CommentModel;
 import com.sc.fisherman.model.dto.post.PostModel;
 import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.service.PostService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,14 +28,20 @@ public class PostController {
     @Autowired
     private PostService postService;
 
+    @Operation(summary = "Yeni bir post kaydet", description = "Kullanıcıdan alınan verilerle yeni bir gönderi (post) oluşturur. " +
+            "Görsel içerebilir. Postman kullanımında body kısmında form-data seçilir. Zorunlu alanlar key bölümüne girilerek kayıt yapılır.")
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostModel> save(@ModelAttribute PostModel postModel) {
-        PostModel savedPost = postService.save(postModel);
-        return ResponseEntity.ok(savedPost);
+        return ResponseEntity.ok(postService.save(postModel));
+    }
+
+    @PutMapping(value = "/update")
+    public ResponseEntity<PostModel> update(@RequestBody PostModel postModel) {
+        return ResponseEntity.ok(postService.update(postModel));
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<PostModel> getById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<PostModel> getById(@Parameter(description = "PostId") @PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(postService.getById(id));
     }
 
@@ -62,7 +71,7 @@ public class PostController {
     }
 
     @GetMapping("/getListByLocationId/{locationId}/{userId}")
-    public ResponseEntity<List<PostModel>> getListByLocationId(@PathVariable(name = "locationId") @NotNull Long locationId, @PathVariable(name = "userId") @NotNull Long userId) {
+    public ResponseEntity<List<PostModel>> getListByLocationId(@PathVariable(name = "locationId") @NotNull Long locationId,@Parameter(description = "loginUserId") @PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(postService.getListByLocationId(locationId, userId));
     }
 
@@ -102,15 +111,5 @@ public class PostController {
     @GetMapping("/getTotalStats")
     public ResponseEntity<TotalStatsModel> getTotalStats() {
         return ResponseEntity.ok(postService.getTotalStats());
-    }
-
-    @PostMapping("/commentPost")
-    public void commentPost(@RequestBody CommentModel commentModel) {
-        postService.commentPost(commentModel);
-    }
-
-    @DeleteMapping("/deleteComment/{commentId}")
-    public void deleteComment(@PathVariable(name = "commentId") Long commentId) {
-        postService.deleteComment(commentId);
     }
 }

@@ -1,6 +1,7 @@
 package com.sc.fisherman.model.dto.post;
 
 import com.sc.fisherman.model.dto.base.BaseModel;
+import com.sc.fisherman.model.dto.comment.CommentModel;
 import com.sc.fisherman.model.enums.EnumFishType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

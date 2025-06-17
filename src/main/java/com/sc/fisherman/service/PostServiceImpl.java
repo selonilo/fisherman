@@ -3,7 +3,7 @@ package com.sc.fisherman.service;
 import com.sc.fisherman.exception.AnErrorOccurredException;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.TotalStatsModel;
-import com.sc.fisherman.model.dto.post.CommentModel;
+import com.sc.fisherman.model.dto.comment.CommentModel;
 import com.sc.fisherman.model.dto.post.PostModel;
 import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.model.entity.CommentEntity;
@@ -53,6 +53,15 @@ public class PostServiceImpl implements PostService {
         return savedModel;
     }
 
+    public PostModel update(PostModel postModel) {
+        var optEntity = postRepository.findById(postModel.getId());
+        if (optEntity.isPresent()) {
+            return PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
+        } else {
+            throw new NotFoundException(postModel.getId().toString());
+        }
+    }
+
     public void delete(Long id) {
         postRepository.deleteById(id);
     }
@@ -64,30 +73,6 @@ public class PostServiceImpl implements PostService {
             return PostMapper.mapTo(post);
         } else {
             throw new NotFoundException(id.toString());
-        }
-    }
-
-    public void likePost(Long postId, Long userId) {
-        var optPost = postRepository.findById(postId);
-        var optUser = userRepository.findById(userId);
-        if (optPost.isPresent() && optUser.isPresent()) {
-            LikeEntity likeEntity = new LikeEntity();
-            likeEntity.setPostId(postId);
-            likeEntity.setUserId(userId);
-            likeRepository.saveAndFlush(likeEntity);
-        } else {
-            throw new NotFoundException(postId.toString().concat(userId.toString()));
-        }
-    }
-
-    public void unLikePost(Long postId, Long userId) {
-        var optPost = postRepository.findById(postId);
-        var optUser = userRepository.findById(userId);
-        if (optPost.isPresent() && optUser.isPresent()) {
-            var optLike = likeRepository.findByPostIdAndUserId(postId, userId);
-            optLike.ifPresent(likeEntity -> likeRepository.delete(likeEntity));
-        } else {
-            throw new NotFoundException(postId.toString().concat(userId.toString()));
         }
     }
 
@@ -267,29 +252,6 @@ public class PostServiceImpl implements PostService {
         return totalStatsModel;
     }
 
-    public void commentPost(CommentModel commentModel) {
-        var optPost = postRepository.findById(commentModel.getPostId());
-        var optUser = userRepository.findById(commentModel.getUserId());
-        if (optPost.isPresent() && optUser.isPresent()) {
-            CommentEntity commentEntity = new CommentEntity();
-            commentEntity.setUserId(commentModel.getUserId());
-            commentEntity.setPostId(commentModel.getPostId());
-            commentEntity.setComment(commentModel.getComment());
-            commentRepository.saveAndFlush(commentEntity);
-        } else {
-            throw new NotFoundException(commentModel.getPostId().toString().concat(commentModel.getUserId().toString()));
-        }
-    }
-
-    public void deleteComment(Long commentId) {
-        var optComment = commentRepository.findById(commentId);
-        if (optComment.isPresent()) {
-            optComment.ifPresent(commentEntity -> commentRepository.delete(commentEntity));
-        } else {
-            throw new NotFoundException(commentId.toString());
-        }
-    }
-
     public List<PostModel> getListByLocationId(Long locationId, Long userId) {
         List<PostEntity> postList = postRepository.findAllByLocationId(locationId);
         List<PostModel> postModelList = PostMapper.mapToList(postList);
@@ -328,5 +290,29 @@ public class PostServiceImpl implements PostService {
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));
         return postModelList;
+    }
+
+    public void likePost(Long postId, Long userId) {
+        var optPost = postRepository.findById(postId);
+        var optUser = userRepository.findById(userId);
+        if (optPost.isPresent() && optUser.isPresent()) {
+            LikeEntity likeEntity = new LikeEntity();
+            likeEntity.setPostId(postId);
+            likeEntity.setUserId(userId);
+            likeRepository.saveAndFlush(likeEntity);
+        } else {
+            throw new NotFoundException(postId.toString().concat(userId.toString()));
+        }
+    }
+
+    public void unLikePost(Long postId, Long userId) {
+        var optPost = postRepository.findById(postId);
+        var optUser = userRepository.findById(userId);
+        if (optPost.isPresent() && optUser.isPresent()) {
+            var optLike = likeRepository.findByPostIdAndUserId(postId, userId);
+            optLike.ifPresent(likeEntity -> likeRepository.delete(likeEntity));
+        } else {
+            throw new NotFoundException(postId.toString().concat(userId.toString()));
+        }
     }
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -16,6 +16,6 @@ import java.time.LocalDate;
 public class NotificationModel extends BaseModel {
     private String icon;
     private String notificationMessage;
-    private LocalDate notificationDate;
+    private LocalDateTime notificationDate;
     private UserModel userModel;
 }

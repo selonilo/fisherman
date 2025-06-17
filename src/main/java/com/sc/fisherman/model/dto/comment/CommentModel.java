@@ -1,4 +1,4 @@
-package com.sc.fisherman.model.dto.post;
+package com.sc.fisherman.model.dto.comment;
 
 import com.sc.fisherman.model.dto.base.BaseModel;
 import com.sc.fisherman.model.dto.user.UserModel;
@@ -15,5 +15,6 @@ public class CommentModel extends BaseModel {
     private Long postId;
     private Long userId;
     private String comment;
+    private Long parentCommentId;
     private UserModel userModel;
 }

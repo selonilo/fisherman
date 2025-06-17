@@ -268,6 +268,18 @@ public class AuthServiceImpl implements AuthService {
             notificationModel.setNotificationDate(comment.getCreatedDate());
             notificationModelList.add(notificationModel);
         }
+        var followList = followRepository.findByFollowerUserId(userId);
+        var followIdList = followList.stream().map(FollowEntity::getFollowUserId).toList();
+        var followPostList = postRepository.findAllByUserIdIn(followIdList);
+        for (var follow : followPostList) {
+            NotificationModel notificationModel = new NotificationModel();
+            notificationModel.setIcon("");
+            var optUser = userRepository.findById(follow.getUserId());
+            optUser.ifPresent(userEntity -> notificationModel.setUserModel(UserMapper.mapTo(userEntity)));
+            notificationModel.setNotificationMessage(follow.getTitle().concat(" Başlıklı gönderi paylaştı."));
+            notificationModel.setNotificationDate(follow.getCreatedDate());
+            notificationModelList.add(notificationModel);
+        }
         return notificationModelList;
     }
 

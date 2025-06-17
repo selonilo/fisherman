@@ -7,6 +7,7 @@ import com.sc.fisherman.model.dto.user.PasswordRefreshModel;
 import com.sc.fisherman.model.dto.user.TokenModel;
 import com.sc.fisherman.model.dto.user.UserModel;
 import com.sc.fisherman.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +94,8 @@ public class AuthController {
         return ResponseEntity.ok(authService.getFollowerListByUserId(userId));
     }
 
+    @Operation(summary = "Bildirim çekme servisi", description = "Giriş yapan kullanıcının postlarına gelen beğeni ve yorumları listeler." +
+            " Takip ettiği kullanıcılar yeni post paylaşırsa onlar da listelenir.")
     @GetMapping("/getNotification/{userId}")
     public ResponseEntity<List<NotificationModel>> getNotification(@PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(authService.getNotification(userId));
