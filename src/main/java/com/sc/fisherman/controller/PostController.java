@@ -24,11 +24,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/post")
 public class PostController {
-
     @Autowired
     private PostService postService;
 
-    @Operation(summary = "Yeni bir post kaydet", description = "Kullanıcıdan alınan verilerle yeni bir gönderi (post) oluşturur. " +
+    @Operation(summary = "Yeni bir post kaydet (Fotoğraflı veya fotoğrafsız)", description = "Kullanıcıdan alınan verilerle yeni bir gönderi (post) oluşturur. " +
             "Görsel içerebilir. Postman kullanımında body kısmında form-data seçilir. Zorunlu alanlar key bölümüne girilerek kayıt yapılır.")
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostModel> save(@ModelAttribute PostModel postModel) {
@@ -50,11 +49,13 @@ public class PostController {
         postService.delete(id);
     }
 
+    @Operation(summary = "Post beğenme servisi", description = "Post beğenme servisi.")
     @PutMapping("/like/{postId}/{userId}")
     public void likePost(@PathVariable(name = "postId") @NotNull Long postId, @PathVariable(name = "userId") @NotNull Long userId) {
         postService.likePost(postId, userId);
     }
 
+    @Operation(summary = "Post beğeni kaldırma servisi", description = "Post beğeni kaldırma servisi.")
     @PutMapping("/unLike/{postId}/{userId}")
     public void unLikePost(@PathVariable(name = "postId") @NotNull Long postId, @PathVariable(name = "userId") @NotNull Long userId) {
         postService.unLikePost(postId, userId);
@@ -90,6 +91,7 @@ public class PostController {
         return ResponseEntity.ok(postService.isLiked(postId, userId));
     }
 
+    @Operation(summary = "Post fotoğraf ekleme servisi", description = "Daha önceden eklenen bir post a fotoğraf eklemeye yarar.")
     @PostMapping("/uploadImage/{postId}")
     public ResponseEntity<Map<String, String>> uploadImage(
             @PathVariable Long postId,
@@ -103,11 +105,13 @@ public class PostController {
         return ResponseEntity.ok(response);
     }
 
+    @Operation(summary = "Fotoğraf silme servisi", description = "Post a eklenen fotoğrafı silme servisi.")
     @DeleteMapping("/deleteImage/{postId}")
     public void deleteImage(@PathVariable Long postId) {
         postService.deleteImage(postId);
     }
 
+    @Operation(summary = "Toplam istatistik servisi", description = "Toplam post like comment user bilgilerini döner.")
     @GetMapping("/getTotalStats")
     public ResponseEntity<TotalStatsModel> getTotalStats() {
         return ResponseEntity.ok(postService.getTotalStats());

@@ -44,11 +44,13 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(loginModel));
     }
 
+    @Operation(summary = "Şifre yenileme servisi", description = "Kullanıcı şifresini unuttuğunda mail adresine şifre göndermeye yarar.")
     @PostMapping("/refreshPassword")
     public ResponseEntity<ResponseMessageModel> refreshPassword(@RequestBody PasswordRefreshModel passwordRefreshModel) {
         return ResponseEntity.ok(authService.refreshPassword(passwordRefreshModel));
     }
 
+    @Operation(summary = "Profil fotoğrafı ekler", description = "Kullanıcı profil fotoğrafı ekler")
     @PostMapping("/uploadImage/{userId}")
     public ResponseEntity<Map<String, String>> uploadImage(
             @PathVariable Long userId,
@@ -68,27 +70,32 @@ public class AuthController {
     }
 
 
+    @Operation(summary = "Kullanıcının fotoğrafını çekme servisi", description = "Kullanıcının fotoğrafını çeker.")
     @GetMapping("getImage/{userId}")
     public ResponseEntity<String> getImage(@PathVariable Long userId) {
         String imageUrl = authService.getImage(userId);
         return ResponseEntity.ok(imageUrl);
     }
 
+    @Operation(summary = "Takip etme servisi", description = "Kullanıcıyı takip etmeye yarar.")
     @PutMapping("/followUser/{followUserId}/{followerUserId}")
     public void followUser(@PathVariable(name = "followUserId") @NotNull Long followUserId, @PathVariable(name = "followerUserId") @NotNull Long followerUserId) {
         authService.followUser(followUserId, followerUserId);
     }
 
+    @Operation(summary = "Takipten çıkarma servisi", description = "Kullanıcıyı takip etmeyi sonlandırır.")
     @PutMapping("/unFollowUser/{followUserId}/{followerUserId}")
     public void unFollowUser(@PathVariable(name = "followUserId") @NotNull Long followUserId, @PathVariable(name = "followerUserId") @NotNull Long followerUserId) {
         authService.unFollowUser(followUserId, followerUserId);
     }
 
+    @Operation(summary = "Takipçi listesini döner", description = "Kullanıcıyı takip eden kullanıcıların listesini döner.")
     @GetMapping("/getFollowListByUserId/{userId}")
     public ResponseEntity<List<UserModel>> getFollowListByUserId(@PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(authService.getFollowListByUserId(userId));
     }
 
+    @Operation(summary = "Takip edilen kullanıcı listesini döner", description = "Kullanıcının takip ettiği kullanıcıların listesini döner.")
     @GetMapping("/getFollowerListByUserId/{userId}")
     public ResponseEntity<List<UserModel>> getFollowerListByUserId(@PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(authService.getFollowerListByUserId(userId));
