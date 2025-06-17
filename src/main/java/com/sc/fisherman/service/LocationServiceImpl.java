@@ -22,7 +22,10 @@ public class LocationServiceImpl implements LocationService {
     private ApproveRepository approveRepository;
 
     public LocationModel save(LocationModel model) {
-        return LocationMapper.mapTo(repository.saveAndFlush(LocationMapper.mapTo(model)));
+        var savedModel = LocationMapper.mapTo(repository.saveAndFlush(LocationMapper.mapTo(model)));
+        var optUser = userRepository.findById(savedModel.getUserId());
+        optUser.ifPresent(x -> savedModel.setUserModel(UserMapper.mapTo(x)));
+        return savedModel;
     }
 
     public LocationModel update(LocationModel model) {
