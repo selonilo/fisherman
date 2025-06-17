@@ -61,6 +61,11 @@ public class PostController {
         return ResponseEntity.ok(postService.getListByUserId(userId));
     }
 
+    @GetMapping("/getListByLocationId/{locationId}/{userId}")
+    public ResponseEntity<List<PostModel>> getListByLocationId(@PathVariable(name = "locationId") @NotNull Long locationId, @PathVariable(name = "userId") @NotNull Long userId) {
+        return ResponseEntity.ok(postService.getListByLocationId(locationId, userId));
+    }
+
     @GetMapping("/getListByUserIdAndLoginUserId/{userId}/{loginUserId}")
     public ResponseEntity<List<PostModel>> getListByUserIdAndLoginUserId(@PathVariable(name = "userId") @NotNull Long userId, @PathVariable(name = "loginUserId") @NotNull Long loginUserId) {
         return ResponseEntity.ok(postService.getListByUserIdAndLoginUserId(userId, loginUserId));

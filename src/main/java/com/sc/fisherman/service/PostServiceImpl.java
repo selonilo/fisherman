@@ -47,7 +47,9 @@ public class PostServiceImpl implements PostService {
 
     public PostModel save(PostModel postModel) {
         var savedModel = PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
-        uploadImage(savedModel.getId(), savedModel.getFile());
+        if (postModel.getFile() != null) {
+            uploadImage(savedModel.getId(), postModel.getFile());
+        }
         return savedModel;
     }
 
@@ -286,5 +288,45 @@ public class PostServiceImpl implements PostService {
         } else {
             throw new NotFoundException(commentId.toString());
         }
+    }
+
+    public List<PostModel> getListByLocationId(Long locationId, Long userId) {
+        List<PostEntity> postList = postRepository.findAllByLocationId(locationId);
+        List<PostModel> postModelList = PostMapper.mapToList(postList);
+        for (var post : postModelList) {
+            var optView = viewRepository.findByPostIdAndUserId(post.getId(), userId);
+            if (optView.isEmpty()) {
+                ViewEntity viewEntity = new ViewEntity();
+                viewEntity.setPostId(post.getId());
+                viewEntity.setUserId(userId);
+                viewRepository.saveAndFlush(viewEntity);
+            }
+            post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
+            post.setIsFollowed(followRepository.findByFollowUserIdAndFollowerUserId(post.getUserId(), userId).isPresent());
+            post.setLikeNumber(likeRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByPostId(post.getId()));
+            var optUser = userRepository.findById(post.getUserId());
+            optUser.ifPresent(user -> {
+                post.setUserImageUrl(user.getImageUrl());
+                post.setName(user.getName());
+            });
+            var commentList = commentRepository.findAllByPostId(post.getId());
+            List<CommentModel> commentModelList = new ArrayList<>();
+            for (var comment : commentList) {
+                CommentModel commentModel = new CommentModel();
+                commentModel.setId(comment.getId());
+                commentModel.setPostId(comment.getPostId());
+                commentModel.setUserId(comment.getUserId());
+                commentModel.setComment(comment.getComment());
+                commentModel.setCreatedDate(comment.getCreatedDate());
+                var optCommentUser = userRepository.findById(comment.getUserId());
+                optCommentUser.ifPresent(userEntity -> commentModel.setUserModel(UserMapper.mapTo(userEntity)));
+                commentModelList.add(commentModel);
+            }
+            post.setCommentModelList(commentModelList);
+        }
+        postModelList = new ArrayList<>(postModelList);
+        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        return postModelList;
     }
 }

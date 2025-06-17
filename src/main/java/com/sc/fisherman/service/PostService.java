@@ -26,4 +26,5 @@ public interface PostService {
     TotalStatsModel getTotalStats();
     void commentPost(CommentModel commentModel);
     void deleteComment(Long commentId);
+    List<PostModel> getListByLocationId(Long locationId, Long userId);
 }
