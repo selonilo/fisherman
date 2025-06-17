@@ -10,4 +10,7 @@ public interface LocationService {
     void delete(Long id);
     LocationModel getById(Long id);
     List<LocationModel> getList();
+    List<LocationModel> getList(Long userId);
+    Boolean approveLocation(Long locationId, Long userId);
+    Boolean unApproveLocation(Long locationId, Long userId);
 }

@@ -16,6 +16,11 @@ public class LocationMapper {
         model.setCreatedBy(entity.getCreatedBy());
         model.setCoordinate(entity.getCoordinate());
         model.setUserId(entity.getUserId());
+        model.setName(entity.getName());
+        model.setDescription(entity.getDescription());
+        model.setFishTypeList(entity.getFishTypeList());
+        model.setAddress(entity.getAddress());
+        model.setIsPublic(entity.getIsPublic());
         return model;
     }
 
@@ -28,6 +33,11 @@ public class LocationMapper {
         entity.setCreatedBy(model.getCreatedBy());
         entity.setCoordinate(model.getCoordinate());
         entity.setUserId(model.getUserId());
+        entity.setName(model.getName());
+        entity.setDescription(model.getDescription());
+        entity.setFishTypeList(model.getFishTypeList());
+        entity.setAddress(model.getAddress());
+        entity.setIsPublic(model.getIsPublic());
         return entity;
     }
 

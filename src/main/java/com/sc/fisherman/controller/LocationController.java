@@ -2,6 +2,7 @@ package com.sc.fisherman.controller;
 
 import com.sc.fisherman.model.dto.location.LocationModel;
 import com.sc.fisherman.service.LocationService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,20 @@ public class LocationController {
     @GetMapping("/getList")
     public ResponseEntity<List<LocationModel>> getList() {
         return ResponseEntity.ok(service.getList());
+    }
+
+    @GetMapping("/getList/{userId}")
+    public ResponseEntity<List<LocationModel>> getList(@PathVariable(name = "userId") Long userId) {
+        return ResponseEntity.ok(service.getList(userId));
+    }
+
+    @PutMapping("/approve/{locationId}/{userId}")
+    public ResponseEntity<Boolean> approveLocation(@PathVariable(name = "locationId") @NotNull Long locationId, @PathVariable(name = "userId") @NotNull Long userId) {
+        return ResponseEntity.ok(service.approveLocation(locationId, userId));
+    }
+
+    @PutMapping("/unApprove/{locationId}/{userId}")
+    public ResponseEntity<Boolean> unApproveLocation(@PathVariable(name = "locationId") @NotNull Long locationId, @PathVariable(name = "userId") @NotNull Long userId) {
+        return ResponseEntity.ok(service.unApproveLocation(locationId, userId));
     }
 }

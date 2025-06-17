@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/api-docs",
                                 "/api-docs.yaml",
                                 "/api-docs/**",
-                                "/webjars/**"
+                                "/webjars/**",
+                                "/api/location/getList"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
