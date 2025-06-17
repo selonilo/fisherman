@@ -23,7 +23,7 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/getById/{id}")
     public ResponseEntity<UserModel> getById(@PathVariable(name = "id") @NotNull Long id) {
         return ResponseEntity.ok(authService.getById(id));
     }

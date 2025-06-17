@@ -46,7 +46,9 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
 
     public PostModel save(PostModel postModel) {
-        return PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
+        var savedModel = PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
+        uploadImage(savedModel.getId(), savedModel.getFile());
+        return savedModel;
     }
 
     public void delete(Long id) {
@@ -224,7 +226,7 @@ public class PostServiceImpl implements PostService {
 
             Files.write(filePath, file.getBytes());
 
-            String imageUrl = "/post/uploads/" + fileName;
+            String imageUrl = "/fisherman/uploads/" + fileName;
             post.setImageUrl(imageUrl);
             postRepository.save(post);
 
@@ -240,7 +242,7 @@ public class PostServiceImpl implements PostService {
 
         if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
             try {
-                Path filePath = Paths.get(uploadPath, post.getImageUrl().replace("/post/uploads/", ""));
+                Path filePath = Paths.get(uploadPath, post.getImageUrl().replace("/fisherman/uploads/", ""));
 
                 Files.deleteIfExists(filePath);
 

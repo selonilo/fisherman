@@ -167,7 +167,7 @@ public class AuthServiceImpl implements AuthService {
 
             Files.write(filePath, file.getBytes());
 
-            String imageUrl = "/post/uploads/" + fileName;
+            String imageUrl = "/fisherman/uploads/" + fileName;
             user.setImageUrl(imageUrl);
             userRepository.save(user);
 
@@ -183,7 +183,7 @@ public class AuthServiceImpl implements AuthService {
 
         if (user.getImageUrl() != null && !user.getImageUrl().isEmpty()) {
             try {
-                Path filePath = Paths.get(uploadPath, user.getImageUrl().replace("/post/uploads/", ""));
+                Path filePath = Paths.get(uploadPath, user.getImageUrl().replace("/fisherman/uploads/", ""));
 
                 Files.deleteIfExists(filePath);
 

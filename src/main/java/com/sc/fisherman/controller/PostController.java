@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,9 +25,10 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-    @PostMapping("/save")
-    public ResponseEntity<PostModel> save(@RequestBody PostModel postModel) {
-        return ResponseEntity.ok(postService.save(postModel));
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PostModel> save(@ModelAttribute PostModel postModel) {
+        PostModel savedPost = postService.save(postModel);
+        return ResponseEntity.ok(savedPost);
     }
 
     @GetMapping("/getById/{id}")
