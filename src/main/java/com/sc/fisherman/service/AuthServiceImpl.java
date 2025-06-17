@@ -19,6 +19,7 @@ import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -113,6 +114,7 @@ public class AuthServiceImpl implements AuthService {
         return tokenModel;
     }
 
+    @Transactional
     public ResponseMessageModel refreshPassword(PasswordRefreshModel passwordRefreshModel) {
         var optUserEntity = userRepository.findByMail(passwordRefreshModel.getMail());
         if (optUserEntity.isPresent()) {
