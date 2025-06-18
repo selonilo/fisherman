@@ -26,7 +26,6 @@ public class PostModel extends BaseModel {
     @NotNull
     @Positive
     private Long userId;
-    private Long locationId;
     private Long viewNumber = 0L;
     private Long likeNumber = 0L;
     @NotBlank
@@ -38,4 +37,6 @@ public class PostModel extends BaseModel {
     private Boolean isFollowed;
     private List<CommentModel> commentModelList;
     private MultipartFile file;
+    private Long locationId;
+    private Long communityId;
 }

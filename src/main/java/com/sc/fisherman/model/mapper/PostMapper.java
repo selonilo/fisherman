@@ -20,6 +20,7 @@ public class PostMapper {
         model.setFishType(entity.getFishType());
         model.setImageUrl(entity.getImageUrl());
         model.setLocationId(entity.getLocationId());
+        model.setCommunityId(entity.getCommunityId());
         return model;
     }
 
@@ -36,6 +37,7 @@ public class PostMapper {
         entity.setFishType(model.getFishType());
         entity.setImageUrl(model.getImageUrl());
         entity.setLocationId(model.getLocationId());
+        entity.setCommunityId(model.getCommunityId());
         return entity;
     }
 

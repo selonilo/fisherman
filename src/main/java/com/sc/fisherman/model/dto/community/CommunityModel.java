@@ -1,43 +1,30 @@
-package com.sc.fisherman.model.entity;
+package com.sc.fisherman.model.dto.community;
 
-import com.sc.fisherman.model.entity.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.sc.fisherman.model.dto.base.BaseModel;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
-@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "COMMUNITY_ENTITY")
-public class CommunityEntity extends BaseEntity {
+public class CommunityModel extends BaseModel {
     @NotBlank
-    @Column(name = "NAME")
     private String name;
-
     @NotBlank
-    @Column(name = "DESCRIPTION")
     private String description;
-
     @NotNull
-    @Column(name = "IS_PUBLIC")
     private Boolean isPublic;
-
     @NotNull
-    @Column(name = "POST_CONFIRMATION")
     private Boolean postConfirmation;
-
     @NotNull
-    @Column(name = "USER_ID")
     private Long userId;
-
-    @Column(name = "IMAGE_URL")
+    private Long followedCount;
     private String imageUrl;
+    private MultipartFile file;
 }

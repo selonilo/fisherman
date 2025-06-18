@@ -96,8 +96,8 @@ public class LocationServiceImpl implements LocationService {
         var optEntity = repository.findById(locationId);
         var optUser = userRepository.findById(userId);
         if (optEntity.isPresent() && optUser.isPresent()) {
-            var optLike = approveRepository.findByLocationIdAndUserId(locationId, userId);
-            optLike.ifPresent(likeEntity -> approveRepository.delete(likeEntity));
+            var optApprove = approveRepository.findByLocationIdAndUserId(locationId, userId);
+            optApprove.ifPresent(approve -> approveRepository.delete(approve));
             return false;
         } else {
             throw new NotFoundException(locationId.toString().concat(userId.toString()));

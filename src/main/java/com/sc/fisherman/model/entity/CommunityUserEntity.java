@@ -16,14 +16,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "LIKE_ENTITY", uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "POST_ID"}))
-public class LikeEntity extends BaseEntity {
+@Table(name = "COMMUNITY_USER_ENTITY", uniqueConstraints = @UniqueConstraint(columnNames = {"COMMUNITY_ID", "USER_ID"}))
+public class CommunityUserEntity extends BaseEntity {
+    @NotNull
+    @Column(name = "COMMUNITY_ID")
+    private Long communityId;
 
     @NotNull
     @Column(name = "USER_ID")
     private Long userId;
-
-    @NotNull
-    @Column(name = "POST_ID")
-    private Long postId;
 }

@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,9 +19,11 @@ import lombok.Setter;
 @Table(name = "FOLLOW_ENTITY", uniqueConstraints = @UniqueConstraint(columnNames = {"FOLLOWER_USER_ID", "FOLLOW_USER_ID"}))
 public class FollowEntity extends BaseEntity {
 
+    @NotNull
     @Column(name = "FOLLOWER_USER_ID")
     private Long followerUserId;
 
+    @NotNull
     @Column(name = "FOLLOW_USER_ID")
     private Long followUserId;
 }
