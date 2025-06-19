@@ -3,6 +3,7 @@ package com.sc.fisherman.service;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.location.LocationModel;
 import com.sc.fisherman.model.entity.*;
+import com.sc.fisherman.model.enums.EnumContentType;
 import com.sc.fisherman.model.mapper.LocationMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
@@ -20,6 +21,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     private ApproveRepository approveRepository;
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
 
     public LocationModel save(LocationModel model) {
         var savedModel = LocationMapper.mapTo(repository.saveAndFlush(LocationMapper.mapTo(model)));
@@ -49,6 +53,7 @@ public class LocationServiceImpl implements LocationService {
             var model = LocationMapper.mapTo(entity);
             var optUser = userRepository.findById(entity.getUserId());
             optUser.ifPresent(x -> model.setUserModel(UserMapper.mapTo(x)));
+            model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
             return model;
         } else {
             throw new NotFoundException(id.toString());
@@ -62,6 +67,7 @@ public class LocationServiceImpl implements LocationService {
             var optUser = userRepository.findById(model.getUserId());
             optUser.ifPresent(x -> model.setUserModel(UserMapper.mapTo(x)));
             model.setApproveCount(approveRepository.countByLocationId(model.getId()));
+            model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
         }
         return modelList;
     }
@@ -74,6 +80,7 @@ public class LocationServiceImpl implements LocationService {
             optUser.ifPresent(x -> model.setUserModel(UserMapper.mapTo(x)));
             model.setApproveCount(approveRepository.countByLocationId(model.getId()));
             model.setIsApproved(approveRepository.findByLocationIdAndUserId(model.getId(), userId).isPresent());
+            model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
         }
         return modelList;
     }

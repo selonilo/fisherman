@@ -10,6 +10,7 @@ import com.sc.fisherman.model.entity.CommentEntity;
 import com.sc.fisherman.model.entity.LikeEntity;
 import com.sc.fisherman.model.entity.PostEntity;
 import com.sc.fisherman.model.entity.ViewEntity;
+import com.sc.fisherman.model.enums.EnumContentType;
 import com.sc.fisherman.model.mapper.PostMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
@@ -45,6 +46,9 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
     public PostModel save(PostModel postModel) {
         var savedModel = PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
         if (postModel.getFile() != null) {
@@ -70,7 +74,9 @@ public class PostServiceImpl implements PostService {
         var optPost = postRepository.findById(id);
         if (optPost.isPresent()) {
             var post = optPost.get();
-            return PostMapper.mapTo(post);
+            var model = PostMapper.mapTo(post);
+            model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, model.getId()));
+            return model;
         } else {
             throw new NotFoundException(id.toString());
         }
@@ -110,6 +116,7 @@ public class PostServiceImpl implements PostService {
                 commentModelList.add(commentModel);
             }
             post.setCommentModelList(commentModelList);
+            post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));
@@ -149,6 +156,7 @@ public class PostServiceImpl implements PostService {
                 commentModelList.add(commentModel);
             }
             post.setCommentModelList(commentModelList);
+            post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));
@@ -188,6 +196,7 @@ public class PostServiceImpl implements PostService {
                 commentModelList.add(commentModel);
             }
             post.setCommentModelList(commentModelList);
+            post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));
@@ -286,6 +295,7 @@ public class PostServiceImpl implements PostService {
                 commentModelList.add(commentModel);
             }
             post.setCommentModelList(commentModelList);
+            post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));

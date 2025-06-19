@@ -28,7 +28,7 @@ public class CommunityController {
     @Autowired
     private CommunityService service;
 
-    @Operation(summary = "Yeni bir topluluk kaydet (Fotoğraflı veya fotoğrafsız)", description = "Kullanıcıdan alınan verilerle yeni bir gönderi (topluluk) oluşturur. " +
+    @Operation(summary = "Yeni bir topluluk kaydet (Fotoğraflı veya fotoğrafsız)", description = "Kullanıcıdan alınan verilerle yeni bir topluluk oluşturur. " +
             "Görsel içerebilir. Postman kullanımında body kısmında form-data seçilir. Zorunlu alanlar key bölümüne girilerek kayıt yapılır.")
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<CommunityModel> save(@ModelAttribute CommunityModel postModel) {
@@ -41,7 +41,7 @@ public class CommunityController {
     }
 
     @GetMapping("/getById/{id}")
-    public ResponseEntity<CommunityModel> getById(@Parameter(description = "PostId") @PathVariable(name = "id") Long id) {
+    public ResponseEntity<CommunityModel> getById(@PathVariable(name = "id") Long id) {
         return ResponseEntity.ok(service.getById(id));
     }
 

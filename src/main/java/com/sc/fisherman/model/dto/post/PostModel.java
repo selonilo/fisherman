@@ -39,4 +39,5 @@ public class PostModel extends BaseModel {
     private MultipartFile file;
     private Long locationId;
     private Long communityId;
+    private Long favoriteCount;
 }
