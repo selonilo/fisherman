@@ -1,10 +1,8 @@
 package com.sc.fisherman.model.entity;
 
 import com.sc.fisherman.model.entity.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import com.sc.fisherman.model.enums.EnumContentType;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +14,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "VIEW_ENTITY", uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "POST_ID"}))
+@Table(name = "VIEW_ENTITY", uniqueConstraints = @UniqueConstraint(columnNames = {"USER_ID", "CONTENT_TYPE", "CONTENT_ID"}))
 public class ViewEntity extends BaseEntity {
 
     @NotNull
@@ -24,6 +22,11 @@ public class ViewEntity extends BaseEntity {
     private Long userId;
 
     @NotNull
-    @Column(name = "POST_ID")
-    private Long postId;
+    @Column(name = "CONTENT_ID")
+    private Long contentId;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(name = "CONTENT_TYPE", length = 30)
+    private EnumContentType contentType;
 }

@@ -85,17 +85,18 @@ public class PostServiceImpl implements PostService {
         List<PostEntity> postList = postRepository.findAll();
         List<PostModel> postModelList = PostMapper.mapToList(postList);
         for (var post : postModelList) {
-            var optView = viewRepository.findByPostIdAndUserId(post.getId(), userId);
+            var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), userId);
             if (optView.isEmpty()) {
                 ViewEntity viewEntity = new ViewEntity();
-                viewEntity.setPostId(post.getId());
+                viewEntity.setContentId(post.getId());
+                viewEntity.setContentType(EnumContentType.POST);
                 viewEntity.setUserId(userId);
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
             post.setIsFollowed(followRepository.findByFollowUserIdAndFollowerUserId(post.getUserId(), userId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
-            post.setViewNumber(viewRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());
             optUser.ifPresent(user -> {
                 post.setUserImageUrl(user.getImageUrl());
@@ -126,16 +127,17 @@ public class PostServiceImpl implements PostService {
         List<PostEntity> postList = postRepository.findAllByUserId(userId);
         List<PostModel> postModelList = PostMapper.mapToList(postList);
         for (var post : postModelList) {
-            var optView = viewRepository.findByPostIdAndUserId(post.getId(), userId);
+            var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), userId);
             if (optView.isEmpty()) {
                 ViewEntity viewEntity = new ViewEntity();
-                viewEntity.setPostId(post.getId());
+                viewEntity.setContentId(post.getId());
+                viewEntity.setContentType(EnumContentType.POST);
                 viewEntity.setUserId(userId);
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
-            post.setViewNumber(viewRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());
             optUser.ifPresent(user -> {
                 post.setUserImageUrl(user.getImageUrl());
@@ -166,16 +168,17 @@ public class PostServiceImpl implements PostService {
         List<PostEntity> postList = postRepository.findAllByUserId(userId);
         List<PostModel> postModelList = PostMapper.mapToList(postList);
         for (var post : postModelList) {
-            var optView = viewRepository.findByPostIdAndUserId(post.getId(), loginUserId);
+            var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), loginUserId);
             if (optView.isEmpty()) {
                 ViewEntity viewEntity = new ViewEntity();
-                viewEntity.setPostId(post.getId());
+                viewEntity.setContentId(post.getId());
+                viewEntity.setContentType(EnumContentType.POST);
                 viewEntity.setUserId(loginUserId);
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), loginUserId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
-            post.setViewNumber(viewRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());
             optUser.ifPresent(user -> {
                 post.setUserImageUrl(user.getImageUrl());
@@ -264,17 +267,18 @@ public class PostServiceImpl implements PostService {
         List<PostEntity> postList = postRepository.findAllByLocationId(locationId);
         List<PostModel> postModelList = PostMapper.mapToList(postList);
         for (var post : postModelList) {
-            var optView = viewRepository.findByPostIdAndUserId(post.getId(), userId);
+            var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), userId);
             if (optView.isEmpty()) {
                 ViewEntity viewEntity = new ViewEntity();
-                viewEntity.setPostId(post.getId());
+                viewEntity.setContentId(post.getId());
+                viewEntity.setContentType(EnumContentType.POST);
                 viewEntity.setUserId(userId);
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
             post.setIsFollowed(followRepository.findByFollowUserIdAndFollowerUserId(post.getUserId(), userId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
-            post.setViewNumber(viewRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());
             optUser.ifPresent(user -> {
                 post.setUserImageUrl(user.getImageUrl());
