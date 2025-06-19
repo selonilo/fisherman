@@ -2,7 +2,6 @@ package com.sc.fisherman.service;
 
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.favorite.FavoriteModel;
-import com.sc.fisherman.model.entity.CommunityUserEntity;
 import com.sc.fisherman.model.mapper.FavoriteMapper;
 import com.sc.fisherman.repository.FavoriteRepository;
 import com.sc.fisherman.repository.UserRepository;

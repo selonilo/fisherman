@@ -1,33 +1,13 @@
 package com.sc.fisherman.service;
 
-import com.sc.fisherman.exception.AnErrorOccurredException;
 import com.sc.fisherman.exception.NotFoundException;
-import com.sc.fisherman.model.dto.TotalStatsModel;
 import com.sc.fisherman.model.dto.comment.CommentModel;
-import com.sc.fisherman.model.dto.post.PostModel;
-import com.sc.fisherman.model.dto.post.PostQueryModel;
-import com.sc.fisherman.model.entity.CommentEntity;
-import com.sc.fisherman.model.entity.LikeEntity;
-import com.sc.fisherman.model.entity.PostEntity;
-import com.sc.fisherman.model.entity.ViewEntity;
 import com.sc.fisherman.model.mapper.CommentMapper;
-import com.sc.fisherman.model.mapper.PostMapper;
-import com.sc.fisherman.model.mapper.UserMapper;
-import com.sc.fisherman.repository.*;
+import com.sc.fisherman.repository.CommentRepository;
+import com.sc.fisherman.repository.PostRepository;
+import com.sc.fisherman.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {

@@ -1,13 +1,11 @@
 package com.sc.fisherman.controller;
 
 import com.sc.fisherman.model.dto.TotalStatsModel;
-import com.sc.fisherman.model.dto.comment.CommentModel;
 import com.sc.fisherman.model.dto.post.PostModel;
 import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.service.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

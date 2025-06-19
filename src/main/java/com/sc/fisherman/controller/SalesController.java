@@ -1,21 +1,15 @@
 package com.sc.fisherman.controller;
 
-import com.sc.fisherman.model.dto.community.CommunityModel;
 import com.sc.fisherman.model.dto.sales.SalesModel;
-import com.sc.fisherman.service.CommunityService;
 import com.sc.fisherman.service.SalesService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sales")

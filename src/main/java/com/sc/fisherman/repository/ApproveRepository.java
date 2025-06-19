@@ -1,7 +1,6 @@
 package com.sc.fisherman.repository;
 
 import com.sc.fisherman.model.entity.ApproveEntity;
-import com.sc.fisherman.model.entity.LikeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
