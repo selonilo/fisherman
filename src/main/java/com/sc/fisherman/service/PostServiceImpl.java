@@ -44,11 +44,26 @@ public class PostServiceImpl implements PostService {
     private FollowRepository followRepository;
     @Autowired
     private CommentRepository commentRepository;
-
     @Autowired
     private FavoriteRepository favoriteRepository;
+    @Autowired
+    private LocationRepository locationRepository;
+    @Autowired
+    private CommunityRepository communityRepository;
 
     public PostModel save(PostModel postModel) {
+        if (postModel.getLocationId() != null) {
+            var optLocation = locationRepository.findById(postModel.getLocationId());
+            if (optLocation.isEmpty()) {
+                throw new NotFoundException(postModel.getLocationId().toString());
+            }
+        }
+        if (postModel.getCommunityId() != null) {
+            var optCommunity = communityRepository.findById(postModel.getCommunityId());
+            if (optCommunity.isEmpty()) {
+                throw new NotFoundException(postModel.getCommunityId().toString());
+            }
+        }
         var savedModel = PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
         if (postModel.getFile() != null) {
             uploadImage(savedModel.getId(), postModel.getFile());

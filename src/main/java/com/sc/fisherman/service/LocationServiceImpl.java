@@ -80,6 +80,7 @@ public class LocationServiceImpl implements LocationService {
             optUser.ifPresent(x -> model.setUserModel(UserMapper.mapTo(x)));
             model.setApproveCount(approveRepository.countByLocationId(model.getId()));
             model.setIsApproved(approveRepository.findByLocationIdAndUserId(model.getId(), userId).isPresent());
+            model.setIsFavorited(favoriteRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.LOCATION, userId, model.getId()).isPresent());
             model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
         }
         return modelList;

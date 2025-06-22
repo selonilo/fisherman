@@ -34,5 +34,6 @@ public class LocationModel extends BaseModel {
     private UserModel userModel;
     private Long approveCount;
     private Boolean isApproved;
+    private Boolean isFavorited;
     private Long favoriteCount;
 }
