@@ -46,6 +46,6 @@ public class GlobalExceptionHandler {
         }
         // Diğer hatalar için genel yanıt
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("{\"message\": \"Beklenmeyen bir hata oluştu\", \"status\": 500}");
+                .body("{\"message\": \"Beklenmeyen bir hata oluştu\", \"status\": 500}".concat("errorDetail:").concat(e.getMessage()));
     }
 }

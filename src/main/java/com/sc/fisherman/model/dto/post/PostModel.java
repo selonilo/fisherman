@@ -40,4 +40,6 @@ public class PostModel extends BaseModel {
     private Long locationId;
     private Long communityId;
     private Long favoriteCount;
+    private String communityName;
+    private String locationName;
 }

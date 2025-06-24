@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
     }
 
     public List<PostModel> getList(Long userId) {
-        List<PostEntity> postList = postRepository.findAll();
+        List<PostEntity> postList = postRepository.findAllByLocationIdIsNullAndCommunityIdIsNull();
         List<PostModel> postModelList = PostMapper.mapToList(postList);
         for (var post : postModelList) {
             var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), userId);
@@ -173,6 +173,14 @@ public class PostServiceImpl implements PostService {
             }
             post.setCommentModelList(commentModelList);
             post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
+            if (post.getCommunityId() != null) {
+                var optCommunity = communityRepository.findById(post.getCommunityId());
+                optCommunity.ifPresent(x -> post.setCommunityName(x.getName()));
+            }
+            if (post.getLocationId() != null) {
+                var optLocation = locationRepository.findById(post.getLocationId());
+                optLocation.ifPresent(x -> post.setLocationName(x.getName()));
+            }
         }
         postModelList = new ArrayList<>(postModelList);
         postModelList.sort(Comparator.comparing(PostModel::getUserId));

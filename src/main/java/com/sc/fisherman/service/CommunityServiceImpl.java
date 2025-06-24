@@ -1,5 +1,6 @@
 package com.sc.fisherman.service;
 
+import com.sc.fisherman.exception.AlreadyExistException;
 import com.sc.fisherman.exception.AnErrorOccurredException;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.community.CommunityModel;
@@ -33,6 +34,10 @@ public class CommunityServiceImpl implements CommunityService {
     private UserRepository userRepository;
 
     public CommunityModel save(CommunityModel model) {
+        var optEntity = repository.findByName(model.getName());
+        if (optEntity.isPresent()) {
+            throw new AlreadyExistException(model.getName());
+        }
         var savedModel = CommunityMapper.mapTo(repository.saveAndFlush(CommunityMapper.mapTo(model)));
         var optUser = userRepository.findById(savedModel.getUserId());
         optUser.ifPresent(user -> {
