@@ -50,28 +50,15 @@ public class CommunityController {
         service.delete(id);
     }
 
-    @GetMapping("/getList")
-    public ResponseEntity<List<CommunityModel>> getList() {
-        return ResponseEntity.ok(service.getList());
+    @GetMapping("/getList/{userId}")
+    public ResponseEntity<List<CommunityModel>> getList(@PathVariable(name = "userId") Long userId) {
+        return ResponseEntity.ok(service.getList(userId));
     }
 
-    @GetMapping("/getList/{userId}")
+    @GetMapping("/getListByFollowed/{userId}")
     public ResponseEntity<List<CommunityModel>> getListByFollowed(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.ok(service.getListByFollowed(userId));
     }
-
-    @Operation(summary = "Takip etme servisi", description = "Takip etme servisi")
-    @PutMapping("/follow/{communityId}/{userId}")
-    public ResponseEntity<Boolean> followCommunity(@PathVariable(name = "communityId") @NotNull Long communityId, @PathVariable(name = "userId") @NotNull Long userId) {
-        return ResponseEntity.ok(service.followCommunity(communityId, userId));
-    }
-
-    @Operation(summary = "Takipten çıkma servisi", description = "Takipten çıkma servisi")
-    @PutMapping("/unFollow/{communityId}/{userId}")
-    public ResponseEntity<Boolean> unFollowCommunity(@PathVariable(name = "communityId") @NotNull Long communityId, @PathVariable(name = "userId") @NotNull Long userId) {
-        return ResponseEntity.ok(service.unFollowCommunity(communityId, userId));
-    }
-
 
     @Operation(summary = "Topluluk fotoğraf ekleme servisi", description = "Daha önceden eklenen bir topluluğa fotoğraf eklemeye yarar.")
     @PostMapping("/uploadImage/{communityId}")

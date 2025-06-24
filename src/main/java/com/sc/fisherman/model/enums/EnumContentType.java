@@ -3,7 +3,9 @@ package com.sc.fisherman.model.enums;
 public enum EnumContentType {
     POST(0L),
     SALES(1L),
-    LOCATION(2L);
+    LOCATION(2L),
+    COMMUNITY(3L),
+    USER(4L);
 
     private final long value;
 

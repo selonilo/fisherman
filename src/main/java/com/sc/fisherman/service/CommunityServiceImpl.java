@@ -4,7 +4,8 @@ import com.sc.fisherman.exception.AnErrorOccurredException;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.community.CommunityModel;
 import com.sc.fisherman.model.entity.CommunityEntity;
-import com.sc.fisherman.model.entity.CommunityUserEntity;
+import com.sc.fisherman.model.entity.FollowEntity;
+import com.sc.fisherman.model.enums.EnumContentType;
 import com.sc.fisherman.model.mapper.CommunityMapper;
 import com.sc.fisherman.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CommunityServiceImpl implements CommunityService {
     private CommunityRepository repository;
 
     @Autowired
-    private CommunityUserRepository communityUserRepository;
+    private FollowRepository followRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -35,10 +36,11 @@ public class CommunityServiceImpl implements CommunityService {
         var savedModel = CommunityMapper.mapTo(repository.saveAndFlush(CommunityMapper.mapTo(model)));
         var optUser = userRepository.findById(savedModel.getUserId());
         optUser.ifPresent(user -> {
-            CommunityUserEntity communityUserEntity = new CommunityUserEntity();
-            communityUserEntity.setCommunityId(savedModel.getId());
-            communityUserEntity.setUserId(user.getId());
-            communityUserRepository.saveAndFlush(communityUserEntity);
+            FollowEntity followEntity = new FollowEntity();
+            followEntity.setContentId(savedModel.getId());
+            followEntity.setUserId(user.getId());
+            followEntity.setContentType(EnumContentType.COMMUNITY);
+            followRepository.saveAndFlush(followEntity);
         });
         if (model.getFile() != null) {
             uploadImage(savedModel.getId(), model.getFile());
@@ -71,19 +73,23 @@ public class CommunityServiceImpl implements CommunityService {
         }
     }
 
-    public List<CommunityModel> getList() {
+    public List<CommunityModel> getList(Long userId) {
         List<CommunityEntity> entityList = repository.findAll();
         var modelList = CommunityMapper.mapToList(entityList);
+        for (var model : modelList) {
+            model.setFollowedCount(followRepository.countByContentTypeAndContentId(EnumContentType.COMMUNITY, model.getId()));
+            model.setIsFollowed(followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.COMMUNITY, userId, model.getId()).isPresent());
+        }
         return modelList;
     }
 
     public List<CommunityModel> getListByFollowed(Long userId) {
-        List<CommunityUserEntity> communityUserEntityList = communityUserRepository.findAllByUserId(userId);
-        var communityIdList = communityUserEntityList.stream().map(CommunityUserEntity::getCommunityId).toList();
+        List<FollowEntity> followEntityList = followRepository.findAllByContentTypeAndUserId(EnumContentType.COMMUNITY, userId);
+        var communityIdList = followEntityList.stream().map(FollowEntity::getContentId).toList();
         List<CommunityEntity> entityList = repository.findAllByIdIn(communityIdList);
         var modelList = CommunityMapper.mapToList(entityList);
         for (var model : modelList) {
-            model.setFollowedCount(communityUserRepository.countByCommunityId(model.getId()));
+            model.setFollowedCount(followRepository.countByContentTypeAndContentId(EnumContentType.COMMUNITY, model.getId()));
         }
         return modelList;
     }
@@ -92,10 +98,11 @@ public class CommunityServiceImpl implements CommunityService {
         var optEntity = repository.findById(communityId);
         var optUser = userRepository.findById(userId);
         if (optEntity.isPresent() && optUser.isPresent()) {
-            CommunityUserEntity communityUserEntity = new CommunityUserEntity();
-            communityUserEntity.setCommunityId(communityId);
-            communityUserEntity.setUserId(userId);
-            communityUserRepository.saveAndFlush(communityUserEntity);
+            FollowEntity followEntity = new FollowEntity();
+            followEntity.setContentId(communityId);
+            followEntity.setUserId(userId);
+            followEntity.setContentType(EnumContentType.COMMUNITY);
+            followRepository.saveAndFlush(followEntity);
             return true;
         } else {
             throw new NotFoundException(communityId.toString().concat(userId.toString()));
@@ -106,8 +113,8 @@ public class CommunityServiceImpl implements CommunityService {
         var optEntity = repository.findById(communityId);
         var optUser = userRepository.findById(userId);
         if (optEntity.isPresent() && optUser.isPresent()) {
-            var optCommunity = communityUserRepository.findByCommunityIdAndUserId(communityId, userId);
-            optCommunity.ifPresent(community -> communityUserRepository.delete(community));
+            var optCommunity = followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.COMMUNITY, userId, communityId);
+            optCommunity.ifPresent(community -> followRepository.delete(community));
             return false;
         } else {
             throw new NotFoundException(communityId.toString().concat(userId.toString()));

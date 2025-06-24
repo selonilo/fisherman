@@ -77,16 +77,11 @@ public class AuthController {
         return ResponseEntity.ok(imageUrl);
     }
 
-    @Operation(summary = "Takip etme servisi", description = "Kullanıcıyı takip etmeye yarar.")
-    @PutMapping("/followUser/{followUserId}/{followerUserId}")
-    public void followUser(@PathVariable(name = "followUserId") @NotNull Long followUserId, @PathVariable(name = "followerUserId") @NotNull Long followerUserId) {
-        authService.followUser(followUserId, followerUserId);
-    }
-
-    @Operation(summary = "Takipten çıkarma servisi", description = "Kullanıcıyı takip etmeyi sonlandırır.")
-    @PutMapping("/unFollowUser/{followUserId}/{followerUserId}")
-    public void unFollowUser(@PathVariable(name = "followUserId") @NotNull Long followUserId, @PathVariable(name = "followerUserId") @NotNull Long followerUserId) {
-        authService.unFollowUser(followUserId, followerUserId);
+    @Operation(summary = "Bildirim çekme servisi", description = "Giriş yapan kullanıcının postlarına gelen beğeni ve yorumları listeler." +
+            " Takip ettiği kullanıcılar yeni post paylaşırsa onlar da listelenir.")
+    @GetMapping("/getNotification/{userId}")
+    public ResponseEntity<List<NotificationModel>> getNotification(@PathVariable(name = "userId") @NotNull Long userId) {
+        return ResponseEntity.ok(authService.getNotification(userId));
     }
 
     @Operation(summary = "Takipçi listesini döner", description = "Kullanıcıyı takip eden kullanıcıların listesini döner.")
@@ -99,12 +94,5 @@ public class AuthController {
     @GetMapping("/getFollowerListByUserId/{userId}")
     public ResponseEntity<List<UserModel>> getFollowerListByUserId(@PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(authService.getFollowerListByUserId(userId));
-    }
-
-    @Operation(summary = "Bildirim çekme servisi", description = "Giriş yapan kullanıcının postlarına gelen beğeni ve yorumları listeler." +
-            " Takip ettiği kullanıcılar yeni post paylaşırsa onlar da listelenir.")
-    @GetMapping("/getNotification/{userId}")
-    public ResponseEntity<List<NotificationModel>> getNotification(@PathVariable(name = "userId") @NotNull Long userId) {
-        return ResponseEntity.ok(authService.getNotification(userId));
     }
 }

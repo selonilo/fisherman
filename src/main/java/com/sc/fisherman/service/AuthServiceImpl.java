@@ -15,6 +15,7 @@ import com.sc.fisherman.model.dto.user.UserModel;
 import com.sc.fisherman.model.entity.FollowEntity;
 import com.sc.fisherman.model.entity.PostEntity;
 import com.sc.fisherman.model.entity.UserEntity;
+import com.sc.fisherman.model.enums.EnumContentType;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
 import jakarta.mail.MessagingException;
@@ -69,8 +70,8 @@ public class AuthServiceImpl implements AuthService {
         var optUser = userRepository.findById(id);
         if (optUser.isPresent()) {
             var userModel = UserMapper.mapTo(optUser.get());
-            userModel.setFollowerCount(followRepository.countByFollowerUserId(id));
-            userModel.setFollowCount(followRepository.countByFollowUserId(id));
+            userModel.setFollowerCount(followRepository.countByContentTypeAndContentId(EnumContentType.USER, id));
+            userModel.setFollowCount(followRepository.countByContentTypeAndUserId(EnumContentType.USER, id));
             userModel.setPostCount(postRepository.countByUserId(id));
             userModel.setCommentCount(commentRepository.countByUserId(id));
             return userModel;
@@ -208,41 +209,18 @@ public class AuthServiceImpl implements AuthService {
         return user.getImageUrl();
     }
 
-    public void followUser(Long followUserId, Long followerUserId) {
-        var optFollowUser = userRepository.findById(followUserId);
-        var optFollowerUser = userRepository.findById(followerUserId);
-        if (optFollowUser.isPresent() && optFollowerUser.isPresent()) {
-            FollowEntity followEntity = new FollowEntity();
-            followEntity.setFollowUserId(followUserId);
-            followEntity.setFollowerUserId(followerUserId);
-            followRepository.saveAndFlush(followEntity);
-        } else {
-            throw new NotFoundException(followUserId.toString().concat(followerUserId.toString()));
-        }
-    }
-
-    public void unFollowUser(Long followUserId, Long followerUserId) {
-        var optFollowUser = userRepository.findById(followUserId);
-        var optFollowerUser = userRepository.findById(followerUserId);
-        if (optFollowUser.isPresent() && optFollowerUser.isPresent()) {
-            var optFollow = followRepository.findByFollowUserIdAndFollowerUserId(followUserId, followerUserId);
-            optFollow.ifPresent(followEntity -> followRepository.delete(followEntity));
-        } else {
-            throw new NotFoundException(followUserId.toString().concat(followerUserId.toString()));
-        }
-    }
-
     public List<UserModel> getFollowListByUserId(Long userId) {
-        var followList = followRepository.findByFollowUserId(userId);
-        var userIdList = followList.stream().map(FollowEntity::getFollowerUserId).toList();
+        var followList = followRepository.findAllByContentTypeAndUserId(EnumContentType.USER, userId);
+        var userIdList = followList.stream().map(FollowEntity::getContentId).toList();
         return UserMapper.mapToList(userRepository.findByIdIn(userIdList));
     }
 
     public List<UserModel> getFollowerListByUserId(Long userId) {
-        var followList = followRepository.findByFollowerUserId(userId);
-        var userIdList = followList.stream().map(FollowEntity::getFollowUserId).toList();
+        var followList = followRepository.findAllByContentTypeAndContentId(EnumContentType.USER, userId);
+        var userIdList = followList.stream().map(FollowEntity::getUserId).toList();
         return UserMapper.mapToList(userRepository.findByIdIn(userIdList));
     }
+
 
     public List<NotificationModel> getNotification(Long userId) {
         List<NotificationModel> notificationModelList = new ArrayList<>();
@@ -270,8 +248,8 @@ public class AuthServiceImpl implements AuthService {
             notificationModel.setNotificationDate(comment.getCreatedDate());
             notificationModelList.add(notificationModel);
         }
-        var followList = followRepository.findByFollowerUserId(userId);
-        var followIdList = followList.stream().map(FollowEntity::getFollowUserId).toList();
+        var followList = followRepository.findAllByContentTypeAndContentId(EnumContentType.USER, userId);
+        var followIdList = followList.stream().map(FollowEntity::getUserId).toList();
         var followPostList = postRepository.findAllByUserIdIn(followIdList);
         for (var follow : followPostList) {
             NotificationModel notificationModel = new NotificationModel();

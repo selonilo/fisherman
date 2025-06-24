@@ -109,7 +109,7 @@ public class PostServiceImpl implements PostService {
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
-            post.setIsFollowed(followRepository.findByFollowUserIdAndFollowerUserId(post.getUserId(), userId).isPresent());
+            post.setIsFollowed(followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.USER, post.getUserId(), userId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
             post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());
@@ -291,7 +291,7 @@ public class PostServiceImpl implements PostService {
                 viewRepository.saveAndFlush(viewEntity);
             }
             post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
-            post.setIsFollowed(followRepository.findByFollowUserIdAndFollowerUserId(post.getUserId(), userId).isPresent());
+            post.setIsFollowed(followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.USER, post.getUserId(), userId).isPresent());
             post.setLikeNumber(likeRepository.countByPostId(post.getId()));
             post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
             var optUser = userRepository.findById(post.getUserId());

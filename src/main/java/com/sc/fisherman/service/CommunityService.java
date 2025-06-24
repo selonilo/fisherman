@@ -10,7 +10,7 @@ public interface CommunityService {
     CommunityModel update(CommunityModel model);
     void delete(Long id);
     CommunityModel getById(Long id);
-    List<CommunityModel> getList();
+    List<CommunityModel> getList(Long userId);
     List<CommunityModel> getListByFollowed(Long userId);
     Boolean followCommunity(Long communityId, Long userId);
     Boolean unFollowCommunity(Long communityId, Long userId);

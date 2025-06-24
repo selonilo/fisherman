@@ -27,4 +27,5 @@ public class CommunityModel extends BaseModel {
     private Long followedCount;
     private String imageUrl;
     private MultipartFile file;
+    private Boolean isFollowed;
 }
