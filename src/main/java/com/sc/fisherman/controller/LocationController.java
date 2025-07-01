@@ -1,6 +1,7 @@
 package com.sc.fisherman.controller;
 
 import com.sc.fisherman.model.dto.location.LocationModel;
+import com.sc.fisherman.model.dto.location.LocationQueryModel;
 import com.sc.fisherman.service.LocationService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,11 @@ public class LocationController {
     @GetMapping("/getList/{userId}")
     public ResponseEntity<List<LocationModel>> getList(@PathVariable(name = "userId") Long userId) {
         return ResponseEntity.ok(service.getList(userId));
+    }
+
+    @PostMapping("/getListByQueryModel")
+    public ResponseEntity<List<LocationModel>> getListByQueryModel(@RequestBody LocationQueryModel queryModel) {
+        return ResponseEntity.ok(service.getListByQueryModel(queryModel));
     }
 
     @PutMapping("/approve/{locationId}/{userId}")

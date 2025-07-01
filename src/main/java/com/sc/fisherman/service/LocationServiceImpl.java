@@ -1,12 +1,16 @@
 package com.sc.fisherman.service;
 
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.dto.location.LocationModel;
+import com.sc.fisherman.model.dto.location.LocationQueryModel;
 import com.sc.fisherman.model.entity.*;
 import com.sc.fisherman.model.enums.EnumContentType;
 import com.sc.fisherman.model.mapper.LocationMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +32,14 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     private PostRepository postRepository;
+
+    private final JPAQueryFactory queryFactory;
+
+    private final QLocationEntity query = QLocationEntity.locationEntity;
+
+    public LocationServiceImpl(EntityManager em) {
+        this.queryFactory = new JPAQueryFactory(em);
+    }
 
     public LocationModel save(LocationModel model) {
         var savedModel = LocationMapper.mapTo(repository.saveAndFlush(LocationMapper.mapTo(model)));
@@ -97,6 +109,34 @@ public class LocationServiceImpl implements LocationService {
             model.setApproveCount(approveRepository.countByLocationId(model.getId()));
             model.setIsApproved(approveRepository.findByLocationIdAndUserId(model.getId(), userId).isPresent());
             model.setIsFavorited(favoriteRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.LOCATION, userId, model.getId()).isPresent());
+            model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
+        }
+        return modelList;
+    }
+
+    public List<LocationModel> getListByQueryModel(LocationQueryModel queryModel) {
+        if (queryModel.getName() == null) {
+            queryModel.setName("");
+        }
+        if (queryModel.getAddress() == null) {
+            queryModel.setAddress("");
+        }
+        QFavoriteEntity favoriteQ = QFavoriteEntity.favoriteEntity;
+         var jpaQuery = queryFactory.selectFrom(query)
+                .where(query.name.contains(queryModel.getName()).and(query.address.contains(queryModel.getAddress())))
+                .leftJoin(favoriteQ).on(favoriteQ.contentId.eq(query.id).and(favoriteQ.contentType.eq(EnumContentType.LOCATION)));
+
+         if (queryModel.getOnlyFavorite() != null && queryModel.getOnlyFavorite()) {
+             jpaQuery.where(favoriteQ.userId.eq(queryModel.getUserId()));
+         }
+        List<LocationEntity> entityList = jpaQuery.fetch();
+        var modelList = LocationMapper.mapToList(entityList);
+        for (var model : modelList) {
+            var optUser = userRepository.findById(model.getUserId());
+            optUser.ifPresent(x -> model.setUserModel(UserMapper.mapTo(x)));
+            model.setApproveCount(approveRepository.countByLocationId(model.getId()));
+            model.setIsApproved(approveRepository.findByLocationIdAndUserId(model.getId(), queryModel.getUserId()).isPresent());
+            model.setIsFavorited(favoriteRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.LOCATION, queryModel.getUserId(), model.getId()).isPresent());
             model.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.LOCATION, model.getId()));
         }
         return modelList;
