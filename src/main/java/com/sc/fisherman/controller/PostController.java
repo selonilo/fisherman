@@ -74,7 +74,7 @@ public class PostController {
         return ResponseEntity.ok(postService.getListByLocationId(locationId, userId));
     }
 
-    @GetMapping("/getListByCommunityId/{locationId}/{userId}")
+    @GetMapping("/getListByCommunityId/{communityId}/{userId}")
     public ResponseEntity<List<PostModel>> getListByCommunityId(@PathVariable(name = "communityId") @NotNull Long communityId,@Parameter(description = "loginUserId") @PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(postService.getListByCommunityId(communityId, userId));
     }
