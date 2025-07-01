@@ -9,6 +9,7 @@ import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -24,6 +25,9 @@ public class LocationServiceImpl implements LocationService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
+    @Autowired
+    private PostRepository postRepository;
 
     public LocationModel save(LocationModel model) {
         var savedModel = LocationMapper.mapTo(repository.saveAndFlush(LocationMapper.mapTo(model)));
@@ -43,6 +47,18 @@ public class LocationServiceImpl implements LocationService {
     }
 
     public void delete(Long id) {
+        var postList = postRepository.findAllByLocationId(id);
+        if (postList != null && !postList.isEmpty()) {
+            postRepository.deleteAll(postList);
+        }
+        var approveList = approveRepository.findAllByLocationId(id);
+        if (approveList != null && !approveList.isEmpty()) {
+            approveRepository.deleteAll(approveList);
+        }
+        var favoriteList = favoriteRepository.findAllByContentTypeAndContentId(EnumContentType.LOCATION, id);
+        if (favoriteList != null && !favoriteList.isEmpty()) {
+            favoriteRepository.deleteAll(favoriteList);
+        }
         repository.deleteById(id);
     }
 

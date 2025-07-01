@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface FavoriteRepository extends JpaRepository<FavoriteEntity, Long> {
     Optional<FavoriteEntity> findByContentTypeAndUserIdAndContentId(EnumContentType contentType, Long contentId, Long userId);
     List<FavoriteEntity> findAllByContentTypeAndContentIdIn(EnumContentType contentType, List<Long> contentIdList);
+    List<FavoriteEntity> findAllByContentTypeAndContentId(EnumContentType contentType, Long contentId);
     long countByContentTypeAndContentId(EnumContentType contentType, Long contentId);
 }

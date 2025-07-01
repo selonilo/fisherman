@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface ApproveRepository extends JpaRepository<ApproveEntity, Long> {
     Optional<ApproveEntity> findByLocationIdAndUserId(Long locationId, Long userId);
     List<ApproveEntity> findAllByLocationIdIn(List<Long> locationIdList);
+    List<ApproveEntity> findAllByLocationId(Long locationId);
     long countByLocationId(Long locationId);
 }

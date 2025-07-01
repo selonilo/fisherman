@@ -328,6 +328,48 @@ public class PostServiceImpl implements PostService {
         return postModelList;
     }
 
+    public List<PostModel> getListByCommunityId(Long communityId, Long userId) {
+        List<PostEntity> postList = postRepository.findAllByCommunityId(communityId);
+        List<PostModel> postModelList = PostMapper.mapToList(postList);
+        for (var post : postModelList) {
+            var optView = viewRepository.findByContentTypeAndContentIdAndUserId(EnumContentType.POST, post.getId(), userId);
+            if (optView.isEmpty()) {
+                ViewEntity viewEntity = new ViewEntity();
+                viewEntity.setContentId(post.getId());
+                viewEntity.setContentType(EnumContentType.POST);
+                viewEntity.setUserId(userId);
+                viewRepository.saveAndFlush(viewEntity);
+            }
+            post.setIsLiked(likeRepository.findByPostIdAndUserId(post.getId(), userId).isPresent());
+            post.setIsFollowed(followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.USER, post.getUserId(), userId).isPresent());
+            post.setLikeNumber(likeRepository.countByPostId(post.getId()));
+            post.setViewNumber(viewRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
+            var optUser = userRepository.findById(post.getUserId());
+            optUser.ifPresent(user -> {
+                post.setUserImageUrl(user.getImageUrl());
+                post.setName(user.getName());
+            });
+            var commentList = commentRepository.findAllByPostId(post.getId());
+            List<CommentModel> commentModelList = new ArrayList<>();
+            for (var comment : commentList) {
+                CommentModel commentModel = new CommentModel();
+                commentModel.setId(comment.getId());
+                commentModel.setPostId(comment.getPostId());
+                commentModel.setUserId(comment.getUserId());
+                commentModel.setComment(comment.getComment());
+                commentModel.setCreatedDate(comment.getCreatedDate());
+                var optCommentUser = userRepository.findById(comment.getUserId());
+                optCommentUser.ifPresent(userEntity -> commentModel.setUserModel(UserMapper.mapTo(userEntity)));
+                commentModelList.add(commentModel);
+            }
+            post.setCommentModelList(commentModelList);
+            post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
+        }
+        postModelList = new ArrayList<>(postModelList);
+        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        return postModelList;
+    }
+
     public void likePost(Long postId, Long userId) {
         var optPost = postRepository.findById(postId);
         var optUser = userRepository.findById(userId);

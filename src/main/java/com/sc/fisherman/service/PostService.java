@@ -23,6 +23,7 @@ public interface PostService {
     void deleteImage(Long postId);
     TotalStatsModel getTotalStats();
     List<PostModel> getListByLocationId(Long locationId, Long userId);
+    List<PostModel> getListByCommunityId(Long communityId, Long userId);
     void likePost(Long postId, Long userId);
     void unLikePost(Long postId, Long userId);
 }
