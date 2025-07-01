@@ -115,20 +115,20 @@ public class LocationServiceImpl implements LocationService {
     }
 
     public List<LocationModel> getListByQueryModel(LocationQueryModel queryModel) {
-        if (queryModel.getName() == null) {
-            queryModel.setName("");
-        }
-        if (queryModel.getAddress() == null) {
-            queryModel.setAddress("");
-        }
+
         QFavoriteEntity favoriteQ = QFavoriteEntity.favoriteEntity;
-         var jpaQuery = queryFactory.selectFrom(query)
+        var jpaQuery = queryFactory.selectFrom(query)
                 .where(query.name.contains(queryModel.getName()).and(query.address.contains(queryModel.getAddress())))
                 .leftJoin(favoriteQ).on(favoriteQ.contentId.eq(query.id).and(favoriteQ.contentType.eq(EnumContentType.LOCATION)));
-
-         if (queryModel.getOnlyFavorite() != null && queryModel.getOnlyFavorite()) {
-             jpaQuery.where(favoriteQ.userId.eq(queryModel.getUserId()));
-         }
+        if (queryModel.getName() != null) {
+            jpaQuery.where(query.name.contains(queryModel.getName()));
+        }
+        if (queryModel.getAddress() != null) {
+            jpaQuery.where(query.address.contains(queryModel.getAddress()));
+        }
+        if (queryModel.getOnlyFavorite() != null && queryModel.getOnlyFavorite()) {
+            jpaQuery.where(favoriteQ.userId.eq(queryModel.getUserId()));
+        }
         List<LocationEntity> entityList = jpaQuery.fetch();
         var modelList = LocationMapper.mapToList(entityList);
         for (var model : modelList) {
