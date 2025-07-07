@@ -118,13 +118,12 @@ public class LocationServiceImpl implements LocationService {
 
         QFavoriteEntity favoriteQ = QFavoriteEntity.favoriteEntity;
         var jpaQuery = queryFactory.selectFrom(query)
-                .where(query.name.contains(queryModel.getName()).and(query.address.contains(queryModel.getAddress())))
                 .leftJoin(favoriteQ).on(favoriteQ.contentId.eq(query.id).and(favoriteQ.contentType.eq(EnumContentType.LOCATION)));
         if (queryModel.getName() != null) {
-            jpaQuery.where(query.name.contains(queryModel.getName()));
+            jpaQuery.where(query.name.toLowerCase().contains(queryModel.getName().toLowerCase()));
         }
         if (queryModel.getAddress() != null) {
-            jpaQuery.where(query.address.contains(queryModel.getAddress()));
+            jpaQuery.where(query.address.toLowerCase().contains(queryModel.getAddress().toLowerCase()));
         }
         if (queryModel.getOnlyFavorite() != null && queryModel.getOnlyFavorite()) {
             jpaQuery.where(favoriteQ.userId.eq(queryModel.getUserId()));
