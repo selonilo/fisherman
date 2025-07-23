@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface AuthService {
     UserModel getById(Long id);
+    UserModel getByIdAndLoginUserId(Long id, Long loginUserId);
     UserModel register(UserModel userModel);
     UserModel updateUser(UserModel userModel);
     TokenModel login(LoginModel loginModel);

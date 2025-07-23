@@ -80,6 +80,21 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    public UserModel getByIdAndLoginUserId(Long id, Long loginUserId) {
+        var optUser = userRepository.findById(id);
+        if (optUser.isPresent()) {
+            var userModel = UserMapper.mapTo(optUser.get());
+            userModel.setFollowerCount(followRepository.countByContentTypeAndContentId(EnumContentType.USER, id));
+            userModel.setFollowCount(followRepository.countByContentTypeAndUserId(EnumContentType.USER, id));
+            userModel.setPostCount(postRepository.countByUserId(id));
+            userModel.setCommentCount(commentRepository.countByUserId(id));
+            userModel.setIsFollowed(followRepository.findByContentTypeAndUserIdAndContentId(EnumContentType.USER, loginUserId, id).isPresent());
+            return userModel;
+        } else {
+            throw new NotFoundException(id.toString());
+        }
+    }
+
     public UserModel register(UserModel userModel) {
         var optUser = userRepository.findByMail(userModel.getMail());
         if (optUser.isPresent()) {

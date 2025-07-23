@@ -29,6 +29,11 @@ public class AuthController {
         return ResponseEntity.ok(authService.getById(id));
     }
 
+    @GetMapping("/getByIdAndLoginUserId/{id}/{loginUserId}")
+    public ResponseEntity<UserModel> getByIdAndLoginUserId(@PathVariable(name = "id") @NotNull Long id, @PathVariable(name = "loginUserId") @NotNull Long loginUserId) {
+        return ResponseEntity.ok(authService.getByIdAndLoginUserId(id, loginUserId));
+    }
+
     @PostMapping("/register")
     public ResponseEntity<UserModel> register(@RequestBody UserModel userModel) {
         return ResponseEntity.ok(authService.register(userModel));
