@@ -127,6 +127,7 @@ public class AuthServiceImpl implements AuthService {
         tokenModel.setToken(jwtService.generateToken(user));
         tokenModel.setUserId(user.getId());
         tokenModel.setName(user.getName());
+        tokenModel.setImageUrl(user.getImageUrl());
         return tokenModel;
     }
 

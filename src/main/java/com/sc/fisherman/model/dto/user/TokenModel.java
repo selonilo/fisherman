@@ -7,4 +7,5 @@ public class TokenModel {
     private String token;
     private Long userId;
     private String name;
+    private String imageUrl;
 }
