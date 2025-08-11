@@ -1,5 +1,6 @@
 package com.sc.fisherman.service;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sc.fisherman.configuration.jwt.JwtService;
 import com.sc.fisherman.exception.AlreadyExistException;
 import com.sc.fisherman.exception.AnErrorOccurredException;
@@ -8,21 +9,22 @@ import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.data.PostHardyConstant;
 import com.sc.fisherman.model.dto.NotificationModel;
 import com.sc.fisherman.model.dto.ResponseMessageModel;
-import com.sc.fisherman.model.dto.user.LoginModel;
-import com.sc.fisherman.model.dto.user.PasswordRefreshModel;
-import com.sc.fisherman.model.dto.user.TokenModel;
-import com.sc.fisherman.model.dto.user.UserModel;
-import com.sc.fisherman.model.entity.FollowEntity;
-import com.sc.fisherman.model.entity.PostEntity;
-import com.sc.fisherman.model.entity.UserEntity;
+import com.sc.fisherman.model.dto.post.PostModel;
+import com.sc.fisherman.model.dto.post.PostQueryModel;
+import com.sc.fisherman.model.dto.user.*;
+import com.sc.fisherman.model.entity.*;
 import com.sc.fisherman.model.enums.EnumContentType;
+import com.sc.fisherman.model.mapper.PostMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -65,6 +67,14 @@ public class AuthServiceImpl implements AuthService {
     private CommentRepository commentRepository;
     @Autowired
     private LikeRepository likeRepository;
+
+    private final JPAQueryFactory queryFactory;
+
+    private final QUserEntity query = QUserEntity.userEntity;
+
+    public AuthServiceImpl(EntityManager em) {
+        this.queryFactory = new JPAQueryFactory(em);
+    }
 
     public UserModel getById(Long id) {
         var optUser = userRepository.findById(id);
@@ -277,6 +287,15 @@ public class AuthServiceImpl implements AuthService {
             notificationModelList.add(notificationModel);
         }
         return notificationModelList;
+    }
+
+    public List<UserModel> findWithName(UserQueryModel queryModel) {
+        var jpaQuery = queryFactory.selectFrom(query);
+        if (queryModel.getName() != null) {
+            jpaQuery.where(query.name.toLowerCase().contains(queryModel.getName().toLowerCase()));
+        }
+        var entityList = jpaQuery.fetch();
+        return UserMapper.mapToList(entityList);
     }
 
 }

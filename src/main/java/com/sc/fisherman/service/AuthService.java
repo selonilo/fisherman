@@ -2,10 +2,11 @@ package com.sc.fisherman.service;
 
 import com.sc.fisherman.model.dto.NotificationModel;
 import com.sc.fisherman.model.dto.ResponseMessageModel;
-import com.sc.fisherman.model.dto.user.LoginModel;
-import com.sc.fisherman.model.dto.user.PasswordRefreshModel;
-import com.sc.fisherman.model.dto.user.TokenModel;
-import com.sc.fisherman.model.dto.user.UserModel;
+import com.sc.fisherman.model.dto.post.PostModel;
+import com.sc.fisherman.model.dto.post.PostQueryModel;
+import com.sc.fisherman.model.dto.user.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -23,4 +24,5 @@ public interface AuthService {
     List<NotificationModel> getNotification(Long userId);
     List<UserModel> getFollowListByUserId(Long userId);
     List<UserModel> getFollowerListByUserId(Long userId);
+    List<UserModel> findWithName(UserQueryModel queryModel);
 }
