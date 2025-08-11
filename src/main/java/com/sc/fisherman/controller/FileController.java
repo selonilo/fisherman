@@ -14,7 +14,7 @@ import java.nio.file.Files;
 @RequestMapping("/fisherman/uploads")
 public class FileController {
 
-    private static final String BASE_DIR = "/home/pi/fisherman/uploads/";
+    private static final String BASE_DIR = "/home/selo/fisherman/uploads/";
 
     @GetMapping("/{fileName:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String fileName) {
