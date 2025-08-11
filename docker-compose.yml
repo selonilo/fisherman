@@ -7,3 +7,5 @@ services:
     ports:
       - "8080:8080"
     container_name: post_hardy_container
+    volumes:
+      - /home/selo/fisherman/uploads:/home/selo/fisherman/uploads
