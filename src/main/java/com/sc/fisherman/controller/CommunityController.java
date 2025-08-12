@@ -35,8 +35,8 @@ public class CommunityController {
         return ResponseEntity.ok(service.save(postModel));
     }
 
-    @PostMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<CommunityModel> update(@ModelAttribute CommunityModel postModel) {
+    @PutMapping(value = "/update")
+    public ResponseEntity<CommunityModel> update(@RequestBody CommunityModel postModel) {
         return ResponseEntity.ok(service.update(postModel));
     }
 

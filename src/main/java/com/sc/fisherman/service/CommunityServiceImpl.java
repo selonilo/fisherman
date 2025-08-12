@@ -65,9 +65,7 @@ public class CommunityServiceImpl implements CommunityService {
         var optEntity = repository.findById(model.getId());
         if (optEntity.isPresent()) {
             var entity = CommunityMapper.mapTo(model);
-            if (model.getFile() != null) {
-                uploadImage(model.getId(), model.getFile());
-            }
+            entity.setImageUrl(optEntity.get().getImageUrl());
             return CommunityMapper.mapTo(repository.saveAndFlush(entity));
         } else {
             throw new NotFoundException(model.getName());
