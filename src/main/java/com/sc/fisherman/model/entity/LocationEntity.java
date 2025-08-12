@@ -37,7 +37,6 @@ public class LocationEntity extends BaseEntity {
     @Column(name = "COORDINATE")
     private String coordinate;
 
-    @NotBlank
     @Column(name = "ADDRESS")
     private String address;
 

@@ -25,7 +25,6 @@ public class LocationModel extends BaseModel {
     private List<EnumFishType> fishTypeList;
     @NotBlank
     private String coordinate;
-    @NotBlank
     private String address;
     @NotNull
     private Long userId;
