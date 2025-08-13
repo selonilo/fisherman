@@ -1,16 +1,13 @@
 package com.sc.fisherman.controller;
 
+import com.sc.fisherman.model.dto.NotificationCountModel;
 import com.sc.fisherman.model.dto.NotificationModel;
 import com.sc.fisherman.model.dto.ResponseMessageModel;
-import com.sc.fisherman.model.dto.post.PostModel;
-import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.model.dto.user.*;
 import com.sc.fisherman.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -88,6 +85,11 @@ public class AuthController {
     @GetMapping("/getNotification/{userId}")
     public ResponseEntity<List<NotificationModel>> getNotification(@PathVariable(name = "userId") @NotNull Long userId) {
         return ResponseEntity.ok(authService.getNotification(userId));
+    }
+
+    @GetMapping("/getNotificationCount/{userId}")
+    public ResponseEntity<NotificationCountModel> getNotificationCount(@PathVariable(name = "userId") @NotNull Long userId) {
+        return ResponseEntity.ok(authService.getNotificationCount(userId));
     }
 
     @Operation(summary = "Takipçi listesini döner", description = "Kullanıcıyı takip eden kullanıcıların listesini döner.")

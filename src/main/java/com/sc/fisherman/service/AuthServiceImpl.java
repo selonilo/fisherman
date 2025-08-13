@@ -7,14 +7,13 @@ import com.sc.fisherman.exception.AnErrorOccurredException;
 import com.sc.fisherman.exception.MailOrPasswordIncorrectException;
 import com.sc.fisherman.exception.NotFoundException;
 import com.sc.fisherman.model.data.PostHardyConstant;
+import com.sc.fisherman.model.dto.NotificationCountModel;
 import com.sc.fisherman.model.dto.NotificationModel;
 import com.sc.fisherman.model.dto.ResponseMessageModel;
-import com.sc.fisherman.model.dto.post.PostModel;
-import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.model.dto.user.*;
 import com.sc.fisherman.model.entity.*;
 import com.sc.fisherman.model.enums.EnumContentType;
-import com.sc.fisherman.model.mapper.PostMapper;
+import com.sc.fisherman.model.mapper.NotificationMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
 import jakarta.mail.MessagingException;
@@ -23,8 +22,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +45,7 @@ import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -75,6 +73,10 @@ public class AuthServiceImpl implements AuthService {
     private CommentRepository commentRepository;
     @Autowired
     private LikeRepository likeRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
+    @Autowired
+    private PostService postService;
 
     private final JPAQueryFactory queryFactory;
 
@@ -314,44 +316,29 @@ public class AuthServiceImpl implements AuthService {
 
 
     public List<NotificationModel> getNotification(Long userId) {
-        List<NotificationModel> notificationModelList = new ArrayList<>();
-        List<PostEntity> postList = postRepository.findAllByUserId(userId);
-        var postIdList = postList.stream().map(PostEntity::getId).toList();
-        var likeList = likeRepository.findAllByPostIdIn(postIdList);
-        for (var like : likeList.stream().filter(x -> !x.getUserId().equals(userId)).toList()) {
-            NotificationModel notificationModel = new NotificationModel();
-            notificationModel.setIcon("pi pi-heart-fill");
-            var optUser = userRepository.findById(like.getUserId());
-            optUser.ifPresent(userEntity -> notificationModel.setUserModel(UserMapper.mapTo(userEntity)));
-            var optPost = postRepository.findById(like.getPostId());
-            optPost.ifPresent(postEntity -> notificationModel.setNotificationMessage(postEntity.getTitle().concat(" Başlıklı gönderini beğendi")));
-            notificationModel.setNotificationDate(like.getCreatedDate());
-            notificationModelList.add(notificationModel);
+        var notificationList = notificationRepository.findAllByReceiverUserIdAndIsRead(userId, false);
+        var userIdList = notificationList.stream().map(NotificationEntity::getSenderUserId).distinct().toList();
+        List<UserEntity> userList = new ArrayList<>();
+        if (!userIdList.isEmpty()) {
+            userList = userRepository.findByIdIn(userIdList);
         }
-        var commentList = commentRepository.findAllByPostIdIn(postIdList);
-        for (var comment : commentList.stream().filter(x -> !x.getUserId().equals(userId)).toList()) {
-            NotificationModel notificationModel = new NotificationModel();
-            notificationModel.setIcon("pi pi-comment");
-            var optUser = userRepository.findById(comment.getUserId());
-            optUser.ifPresent(userEntity -> notificationModel.setUserModel(UserMapper.mapTo(userEntity)));
-            var optPost = postRepository.findById(comment.getPostId());
-            optPost.ifPresent(postEntity -> notificationModel.setNotificationMessage(postEntity.getTitle().concat(" Başlıklı gönderine yorum yaptı:".concat("\n").concat(comment.getComment()))));
-            notificationModel.setNotificationDate(comment.getCreatedDate());
-            notificationModelList.add(notificationModel);
+        var notificationModelList = NotificationMapper.mapToList(notificationList);
+        for (var notif : notificationList) {
+            notif.setRead(true);
+            notificationRepository.save(notif);
         }
-        var followList = followRepository.findAllByContentTypeAndContentId(EnumContentType.USER, userId);
-        var followIdList = followList.stream().map(FollowEntity::getUserId).toList();
-        var followPostList = postRepository.findAllByUserIdIn(followIdList);
-        for (var follow : followPostList) {
-            NotificationModel notificationModel = new NotificationModel();
-            notificationModel.setIcon("");
-            var optUser = userRepository.findById(follow.getUserId());
-            optUser.ifPresent(userEntity -> notificationModel.setUserModel(UserMapper.mapTo(userEntity)));
-            notificationModel.setNotificationMessage(follow.getTitle().concat(" Başlıklı gönderi paylaştı."));
-            notificationModel.setNotificationDate(follow.getCreatedDate());
-            notificationModelList.add(notificationModel);
+        for (NotificationModel notificationModel : notificationModelList) {
+            notificationModel.setUserImageUrl(Objects.requireNonNull(userList.stream().filter(user ->
+                    user.getId().equals(notificationModel.getSenderUserId())).findFirst().orElse(null)).getImageUrl());
         }
         return notificationModelList;
+    }
+
+    public NotificationCountModel getNotificationCount(Long userId) {
+        var notificationList = notificationRepository.countByReceiverUserIdAndIsRead(userId, false);
+        NotificationCountModel notificationCountModel = new NotificationCountModel();
+        notificationCountModel.setNotificationCount(notificationList);
+        return notificationCountModel;
     }
 
     public List<UserModel> findWithName(UserQueryModel queryModel) {

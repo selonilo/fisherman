@@ -1,12 +1,9 @@
 package com.sc.fisherman.service;
 
+import com.sc.fisherman.model.dto.NotificationCountModel;
 import com.sc.fisherman.model.dto.NotificationModel;
 import com.sc.fisherman.model.dto.ResponseMessageModel;
-import com.sc.fisherman.model.dto.post.PostModel;
-import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.model.dto.user.*;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -22,6 +19,7 @@ public interface AuthService {
     void deleteUserImage(Long userId);
     String getImage(Long userId);
     List<NotificationModel> getNotification(Long userId);
+    NotificationCountModel getNotificationCount(Long userId);
     List<UserModel> getFollowListByUserId(Long userId);
     List<UserModel> getFollowerListByUserId(Long userId);
     List<UserModel> findWithName(UserQueryModel queryModel);

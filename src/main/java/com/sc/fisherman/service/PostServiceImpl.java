@@ -7,9 +7,11 @@ import com.sc.fisherman.model.dto.comment.CommentModel;
 import com.sc.fisherman.model.dto.post.PostModel;
 import com.sc.fisherman.model.dto.post.PostQueryModel;
 import com.sc.fisherman.model.entity.LikeEntity;
+import com.sc.fisherman.model.entity.NotificationEntity;
 import com.sc.fisherman.model.entity.PostEntity;
 import com.sc.fisherman.model.entity.ViewEntity;
 import com.sc.fisherman.model.enums.EnumContentType;
+import com.sc.fisherman.model.enums.EnumNotificationType;
 import com.sc.fisherman.model.mapper.PostMapper;
 import com.sc.fisherman.model.mapper.UserMapper;
 import com.sc.fisherman.repository.*;
@@ -58,6 +60,8 @@ public class PostServiceImpl implements PostService {
     private LocationRepository locationRepository;
     @Autowired
     private CommunityRepository communityRepository;
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     public PostModel save(PostModel postModel) {
         if (postModel.getLocationId() != null) {
@@ -73,6 +77,23 @@ public class PostServiceImpl implements PostService {
             }
         }
         var savedModel = PostMapper.mapTo(postRepository.saveAndFlush(PostMapper.mapTo(postModel)));
+
+        var notificationUserList = followRepository.findAllByContentTypeAndContentId(EnumContentType.USER, postModel.getUserId());
+        var optUser = userRepository.findById(postModel.getUserId());
+        if (optUser.isPresent()) {
+            for (var user : notificationUserList) {
+                NotificationEntity notif = new NotificationEntity();
+                notif.setReceiverUserId(user.getUserId());
+                notif.setSenderUserId(postModel.getUserId());
+                notif.setContentType(EnumContentType.POST);
+                notif.setContentId(savedModel.getId());
+                notif.setNotificationType(EnumNotificationType.NEW_POST);
+                notif.setMessage(optUser.get().getName() + " yeni gönderi paylaştı.");
+                notificationRepository.save(notif);
+            }
+        }
+
+
         if (postModel.getFile() != null) {
             uploadImage(savedModel.getId(), postModel.getFile());
         }
@@ -445,6 +466,15 @@ public class PostServiceImpl implements PostService {
             likeEntity.setPostId(postId);
             likeEntity.setUserId(userId);
             likeRepository.saveAndFlush(likeEntity);
+
+            NotificationEntity notif = new NotificationEntity();
+            notif.setReceiverUserId(optPost.get().getUserId());
+            notif.setSenderUserId(userId);
+            notif.setContentType(EnumContentType.POST);
+            notif.setContentId(optPost.get().getId());
+            notif.setNotificationType(EnumNotificationType.LIKE);
+            notif.setMessage(optUser.get().getName().concat(" isimli kullanıcı ").concat(optPost.get().getTitle()).concat(" başlıklı gönderini beğendi"));
+            notificationRepository.save(notif);
         } else {
             throw new NotFoundException(postId.toString().concat(userId.toString()));
         }
