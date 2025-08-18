@@ -163,7 +163,7 @@ public class PostServiceImpl implements PostService {
             post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
-        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        postModelList.sort(Comparator.comparing(PostModel::getCreatedDate).reversed());
         return postModelList;
     }
 
@@ -212,7 +212,7 @@ public class PostServiceImpl implements PostService {
             }
         }
         postModelList = new ArrayList<>(postModelList);
-        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        postModelList.sort(Comparator.comparing(PostModel::getCreatedDate).reversed());
         return postModelList;
     }
 
@@ -253,7 +253,7 @@ public class PostServiceImpl implements PostService {
             post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
-        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        postModelList.sort(Comparator.comparing(PostModel::getCreatedDate).reversed());
         return postModelList;
     }
 
@@ -454,7 +454,7 @@ public class PostServiceImpl implements PostService {
             post.setFavoriteCount(favoriteRepository.countByContentTypeAndContentId(EnumContentType.POST, post.getId()));
         }
         postModelList = new ArrayList<>(postModelList);
-        postModelList.sort(Comparator.comparing(PostModel::getUserId));
+        postModelList.sort(Comparator.comparing(PostModel::getCreatedDate).reversed());
         return postModelList;
     }
 
