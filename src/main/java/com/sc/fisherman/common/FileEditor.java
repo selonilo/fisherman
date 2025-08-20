@@ -1,6 +1,7 @@
 package com.sc.fisherman.common;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.IIOImage;
@@ -16,12 +17,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public abstract class FileEditor {
+@Component
+public class FileEditor {
 
     @Value("${upload.path}")
-    private static String uploadPath;
+    private String uploadPath;
 
-    public static String saveFile(MultipartFile file) throws IOException {
+    public String saveFile(MultipartFile file) throws IOException {
         // 📌 Tüm dosyaları JPG olarak kaydedeceğiz
         String fileName = System.currentTimeMillis() + ".jpg";
         Path filePath = Paths.get(uploadPath, fileName);
@@ -78,7 +80,7 @@ public abstract class FileEditor {
     }
 
     // 📌 Yardımcı metod
-    private static String getFileExtension(String fileName) {
+    private String getFileExtension(String fileName) {
         if (fileName == null || !fileName.contains(".")) return "";
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }

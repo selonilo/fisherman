@@ -70,6 +70,8 @@ public class AuthServiceImpl implements AuthService {
     private NotificationRepository notificationRepository;
     @Autowired
     private PostService postService;
+    @Autowired
+    private FileEditor fileEditor;
 
     private final JPAQueryFactory queryFactory;
 
@@ -194,7 +196,7 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new NotFoundException(userId.toString()));
 
         try {
-            String imageUrl = FileEditor.saveFile(file);
+            String imageUrl = fileEditor.saveFile(file);
             user.setImageUrl(imageUrl);
             userRepository.save(user);
 

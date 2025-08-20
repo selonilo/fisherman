@@ -35,6 +35,8 @@ public class CommunityServiceImpl implements CommunityService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private FileEditor fileEditor;
 
     public CommunityModel save(CommunityModel model) {
         var optEntity = repository.findByName(model.getName());
@@ -136,7 +138,7 @@ public class CommunityServiceImpl implements CommunityService {
 
         try {
             deleteImage(communityId);
-            String imageUrl = FileEditor.saveFile(file);
+            String imageUrl = fileEditor.saveFile(file);
             post.setImageUrl(imageUrl);
             repository.save(post);
 
@@ -162,8 +164,6 @@ public class CommunityServiceImpl implements CommunityService {
             } catch (IOException e) {
                 throw new AnErrorOccurredException(communityId.toString());
             }
-        } else {
-            throw new NotFoundException("Silinecek resim".concat(communityId.toString()));
         }
     }
 }

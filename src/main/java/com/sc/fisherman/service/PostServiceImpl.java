@@ -55,6 +55,8 @@ public class PostServiceImpl implements PostService {
     private CommunityRepository communityRepository;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private FileEditor fileEditor;
 
     public PostModel save(PostModel postModel) {
         if (postModel.getLocationId() != null) {
@@ -264,7 +266,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NotFoundException(postId.toString()));
 
         try {
-            String imageUrl = FileEditor.saveFile(file);
+            String imageUrl = fileEditor.saveFile(file);
             post.setImageUrl(imageUrl);
             postRepository.save(post);
 
